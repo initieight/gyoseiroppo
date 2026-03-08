@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.heat-red {
+  background-color: #ff6b6b;
+}
+
+.heat-orange {
+  background-color: #ffa94d;
+}
+
+.heat-yellow {
+  background-color: #ffe066;
+}
+
+.hl {
+  background: #ffe066;
+  padding: 2px 4px;
+  border-radius: 4px;
+}

@@ -1,0 +1,41 @@
+{
+  "year": "R3",
+  "lawId": "admin_procedure",
+  "items": [
+    {
+      "question": 12,
+      "choice": "1",
+      "isCorrect": false,
+      "article": 8,
+      "phrase": "申請者に対し、同時に、当該処分の理由を示さなければならない。"
+    },
+    {
+      "question": 12,
+      "choice": "3",
+      "isCorrect": true,
+      "article": 14,
+      "phrase": "当該理由を示さないで処分をすべき差し迫った必要がある場合は、この限りでない。"
+    },
+    {
+      "question": 12,
+      "choice": "3",
+      "isCorrect": true,
+      "article": 14,
+      "phrase": "処分後相当の期間内に、同項の理由を示さなければならない。"
+    },
+    {
+      "question": 13,
+      "choice": "イ",
+      "isCorrect": true,
+      "article": 35,
+      "phrase": "趣旨及び内容並びに責任者を明確に示さなければならない。"
+    },
+    {
+      "question": 13,
+      "choice": "ウ",
+      "isCorrect": true,
+      "article": 35,
+      "phrase": "趣旨及び内容並びに責任者を明確に示さなければならない。"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "year": "R5",
+  "lawId": "admin_procedure",
+  "items": [
+    {
+      "question": 11,
+      "choice": "2",
+      "isCorrect": true,
+      "article": 2,
+      "phrase": "名あて人となるべき者の同意の下にすることとされている処分"
+    },
+    {
+      "question": 11,
+      "choice": "4",
+      "isCorrect": false,
+      "article": 35,
+      "phrase": "趣旨及び内容並びに責任者を明確に示さなければならない。"
+    },
+    {
+      "question": 13,
+      "choice": "イ",
+      "isCorrect": false,
+      "article": 5,
+      "phrase": "審査基準を定めるに当たっては、許認可等の性質に照らしてできる限り具体的なものとしなければならない。"
+    },
+    {
+      "question": 13,
+      "choice": "ウ",
+      "isCorrect": true,
+      "article": 12,
+      "phrase": "処分基準を定め、かつ、これを公にしておくよう努めなければならない。"
+    }
+  ]
+}

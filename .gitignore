@@ -1,0 +1,33 @@
+# ===== 依存パッケージ =====
+node_modules/
+
+# ===== Next.js ビルド成果物 =====
+.next/
+out/
+build/
+
+# ===== TypeScript ビルドキャッシュ =====
+tsconfig.tsbuildinfo
+
+# ===== 試験問題 PDF（著作権）=====
+exams/
+
+# ===== 試験問題テキストを含む中間データ（著作権グレー）=====
+data/all_exam_pages.json
+data/gyosei_pages.json
+data/gyosei_raw.json
+data/gyosei_analysis.json
+data/r7_gyosei_analysis.json
+data/r2_admin_procedure.json
+data/r3_admin_procedure.json
+data/r4_admin_procedure.json
+data/r5_admin_procedure.json
+data/r6_admin_procedure.json
+data/r7_admin_procedure.json
+
+# ===== OS / エディタ =====
+.DS_Store
+Thumbs.db
+.env
+.env.local
+.env*.local

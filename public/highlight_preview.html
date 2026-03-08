@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>R7 行政手続法 ハイライトプレビュー</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 0 16px; background: #f5f5f5; }
+    h1 { font-size: 1.2rem; color: #333; border-bottom: 2px solid #333; padding-bottom: 8px; }
+    .question-block { margin-bottom: 32px; }
+    .question-title { font-size: 1rem; font-weight: bold; color: #1a56a0; margin-bottom: 12px; }
+    .item {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .meta { min-width: 80px; font-size: 0.78rem; color: #666; line-height: 1.6; }
+    .badge {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 0.72rem;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    .correct   { background: #d1fae5; color: #065f46; }
+    .incorrect { background: #fee2e2; color: #991b1b; }
+    .phrase-wrap { flex: 1; font-size: 0.95rem; line-height: 1.8; }
+    /* マーカー色3種 */
+    .mark-yellow  { background: #ffe066; padding: 1px 2px; border-radius: 2px; }
+    .mark-orange  { background: #ffa94d; padding: 1px 2px; border-radius: 2px; }
+    .mark-red     { background: #ff6b6b; padding: 1px 2px; border-radius: 2px; color: #fff; }
+  </style>
+</head>
+<body>
+  <h1>R7 行政手続法 出題フレーズ ハイライトプレビュー</h1>
+  <div id="app">読み込み中...</div>
+
+  <script>
+    fetch('/r7_admin_procedure.json')
+      .then(r => r.json())
+      .then(data => render(data));
+
+    function render(data) {
+      // group by question
+      const questions = {};
+      for (const item of data.items) {
+        const q = item.question;
+        if (!questions[q]) questions[q] = [];
+        questions[q].push(item);
+      }
+
+      let html = '';
+      for (const [q, items] of Object.entries(questions)) {
+        html += `<div class="question-block">`;
+        html += `<div class="question-title">問題 ${q}</div>`;
+
+        for (const item of items) {
+          const okClass  = item.isCorrect ? 'correct' : 'incorrect';
+          const okLabel  = item.isCorrect ? '正' : '誤';
+          // マーカー色: 正解→yellow, 誤り→orange
+          const markClass = item.isCorrect ? 'mark-yellow' : 'mark-orange';
+
+          html += `<div class="item">`;
+          html += `<div class="meta">
+            <span class="badge ${okClass}">${okLabel}</span><br>
+            肢 ${item.choice}<br>
+            第${item.article}条
+          </div>`;
+          html += `<div class="phrase-wrap">
+            <mark class="${markClass}">${escHtml(item.phrase)}</mark>
+          </div>`;
+          html += `</div>`;
+        }
+        html += `</div>`;
+      }
+
+      document.getElementById('app').innerHTML = html;
+    }
+
+    function escHtml(s) {
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+  </script>
+</body>
+</html>

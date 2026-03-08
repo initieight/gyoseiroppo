@@ -1,0 +1,55 @@
+{
+  "year": "R6",
+  "lawId": "admin_procedure",
+  "items": [
+    {
+      "question": 11,
+      "choice": "5",
+      "isCorrect": true,
+      "article": 13,
+      "phrase": "法令上必要とされる資格がなかったこと又は失われるに至ったことが判明した場合に必ずすることとされている不利益処分"
+    },
+    {
+      "question": 12,
+      "choice": "ア",
+      "isCorrect": true,
+      "article": 35,
+      "phrase": "許認可等をする権限又は許認可等に基づく処分をする権限を行使し得る旨を示すときは、その相手方に対して、次に掲げる事項を示さなければならない。"
+    },
+    {
+      "question": 12,
+      "choice": "ウ",
+      "isCorrect": true,
+      "article": 36,
+      "phrase": "当該行政指導の中止その他必要な措置をとることを求めることができる。"
+    },
+    {
+      "question": 13,
+      "choice": "1",
+      "isCorrect": true,
+      "article": 5,
+      "phrase": "行政上特別の支障があるときを除き、法令により申請の提出先とされている機関の事務所における備付けその他の適当な方法により審査基準を公にしておかなければならない。"
+    },
+    {
+      "question": 13,
+      "choice": "2",
+      "isCorrect": false,
+      "article": 12,
+      "phrase": "処分基準を定め、かつ、これを公にしておくよう努めなければならない。"
+    },
+    {
+      "question": 13,
+      "choice": "4",
+      "isCorrect": false,
+      "article": 5,
+      "phrase": "備付けその他の適当な方法により審査基準を公にしておかなければならない。"
+    },
+    {
+      "question": 13,
+      "choice": "5",
+      "isCorrect": false,
+      "article": 12,
+      "phrase": "処分基準を定め、かつ、これを公にしておくよう努めなければならない。"
+    }
+  ]
+}
