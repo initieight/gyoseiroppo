@@ -1,10 +1,8 @@
 import Link from 'next/link';
+import InstallPrompt from '@/components/InstallPrompt';
 
 const LAWS = [
   { id: 'constitution',       name: '憲法',            href: '/law/constitution' },
-  { id: 'civil_code',         name: '民法',            href: '/law/civil_code' },
-  { id: 'commercial_code',    name: '商法',            href: '/law/commercial_code' },
-  { id: 'company_act',        name: '会社法',          href: '/law/company_act' },
   { id: 'admin_procedure',    name: '行政手続法',      href: '/law/admin_procedure' },
   { id: 'admin_appeal',       name: '行政不服審査法',  href: '/law/admin_appeal' },
   { id: 'admin_litigation',   name: '行政事件訴訟法',  href: '/law/admin_litigation' },
@@ -12,6 +10,9 @@ const LAWS = [
   { id: 'admin_enforcement',  name: '行政代執行法',    href: '/law/admin_enforcement' },
   { id: 'national_admin_org', name: '国家行政組織法',  href: '/law/national_admin_org' },
   { id: 'local_autonomy',     name: '地方自治法',      href: '/law/local_autonomy' },
+  { id: 'civil_code',         name: '民法',            href: '/law/civil_code' },
+  { id: 'commercial_code',    name: '商法',            href: '/law/commercial_code' },
+  { id: 'company_act',        name: '会社法',          href: '/law/company_act' },
 ] as const;
 
 export default function Home() {
@@ -27,7 +28,9 @@ export default function Home() {
           出題箇所と出題頻度を表示します。
         </p>
 
-        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+        <InstallPrompt />
+
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 mt-8">
           法律を選ぶ
         </h2>
 
