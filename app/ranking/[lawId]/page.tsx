@@ -17,6 +17,7 @@ interface LawData {
 interface HighlightArticle {
   count: number;
   years: string[];
+  questions?: string[];
 }
 
 interface HighlightData {
@@ -52,11 +53,12 @@ async function fetchJson<T>(url: string, fallback: T): Promise<T> {
 
 type RankRow = {
   rank: number;
-  key: string;         // article key ("2", "36" etc.)
-  title: string;       // 第◯条
+  key: string;
+  title: string;
   caption?: string;
   count: number;
   years: string[];
+  questions: string[];
 };
 
 export default function RankingPage() {
@@ -97,6 +99,7 @@ export default function RankingPage() {
         caption: lawData?.articles?.[key]?.caption,
         count: v.count,
         years: v.years ?? [],
+        questions: v.questions ?? [],
       }));
 
     // count 降順 → 同率は条番号昇順（数値として比較）
@@ -154,9 +157,21 @@ export default function RankingPage() {
 
                 {/* 条文名 */}
                 <div className="flex-1 min-w-0">
-                  <span className="font-semibold text-gray-800 text-sm">{r.title}</span>
-                  {r.caption && (
-                    <span className="ml-2 text-xs text-gray-500">{r.caption}</span>
+                  <div>
+                    <span className="font-semibold text-gray-800 text-sm">{r.title}</span>
+                    {r.caption && (
+                      <span className="ml-2 text-xs text-gray-500">{r.caption}</span>
+                    )}
+                  </div>
+                  {/* 出題問題番号タグ（民法） */}
+                  {r.questions.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {Array.from(new Set(r.questions)).slice(0, 6).map(q => (
+                        <span key={q} className="px-1 py-0.5 text-[10px] rounded bg-purple-50 text-purple-600">
+                          {q}
+                        </span>
+                      ))}
+                    </div>
                   )}
                 </div>
 
