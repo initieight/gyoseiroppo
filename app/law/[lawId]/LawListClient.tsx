@@ -39,7 +39,14 @@ const RANK_META: Record<Rank, { label: string; chipActive: string; chipInactive:
 
 const RANKS: Rank[] = ['S', 'A', 'B', 'C'];
 
-export default function LawListClient({ articles }: { articles: ArticleRow[] }) {
+export default function LawListClient({
+  articles,
+  countLabels,
+}: {
+  articles: ArticleRow[];
+  /** 条文キー → 「5回」「関連5問」などの表示ラベル */
+  countLabels: Record<string, string>;
+}) {
   const [filter, setFilter] = useState<Rank | null>(null);
   const displayed = filter ? articles.filter(a => a.rank === filter) : articles;
 
@@ -125,7 +132,7 @@ export default function LawListClient({ articles }: { articles: ArticleRow[] }) 
                 {art.count > 0 ? (
                   <>
                     <span className="text-sm font-bold text-gray-700 whitespace-nowrap">
-                      {art.count}回
+                      {countLabels[art.key]}
                     </span>
                     <span className="flex flex-wrap gap-1 justify-end max-w-[104px] sm:max-w-none">
                       {art.years.map(y => (

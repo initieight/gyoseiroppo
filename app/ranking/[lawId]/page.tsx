@@ -11,8 +11,11 @@ import {
   articleSortKey,
   articleHref,
   articleLabel,
+  countBasis,
+  countLabel,
 } from '@/lib/laws';
 import KouzaNudge from '@/components/kouza/KouzaNudge';
+import CountBasisNotice from '@/components/CountBasisNotice';
 
 export const dynamicParams = false;
 
@@ -71,9 +74,11 @@ export async function generateMetadata({
     .map(r => articleLabel(r.key) ?? r.title)
     .join('・');
   const title = `${meta.name} 出題ランキング｜行政書士試験の過去問${range}`;
-  const description = rows.length
-    ? `行政書士試験の過去問（${range}）で${meta.name}から出題された${rows.length}条を、出題回数の多い順にランキング表示。最頻出は${top}。条文本文と出題年度も確認できます。`
-    : `行政書士試験の過去問（${range}）における${meta.name}の出題実績。現在集計対象の出題はありません。`;
+  const description = !rows.length
+    ? `行政書士試験の過去問（${range}）における${meta.name}の出題実績。現在集計対象の出題はありません。`
+    : countBasis(params.lawId) === 'topic-block'
+      ? `行政書士試験の過去問（${range}）で${meta.name}から出題実績のある${rows.length}条を、関連する問題数の多い順に表示。集計は論点単位のため、条文単独の出題回数ではありません。条文本文と出題年度も確認できます。`
+      : `行政書士試験の過去問（${range}）で${meta.name}から出題された${rows.length}条を、出題回数の多い順にランキング表示。最頻出は${top}。条文本文と出題年度も確認できます。`;
 
   return {
     title: { absolute: title },
@@ -108,14 +113,23 @@ export default async function RankingPage({ params }: { params: { lawId: string 
       </h1>
       <p className="text-sm text-gray-600 leading-6 mb-6">
         {rows.length > 0 ? (
-          <>
-            行政書士試験の過去問{range}から抽出した{meta.name}の根拠条文を、出題回数順に並べています。
-            対象は{rows.length}条・のべ{totalCount}回。条文名をタップすると本文と出題箇所を確認できます。
-          </>
+          countBasis(lawId) === 'topic-block' ? (
+            <>
+              行政書士試験の過去問{range}から抽出した{meta.name}の関連条文を、関連する問題数の多い順に並べています。
+              対象は{rows.length}条。条文名をタップすると本文と出題箇所を確認できます。
+            </>
+          ) : (
+            <>
+              行政書士試験の過去問{range}から抽出した{meta.name}の根拠条文を、出題回数順に並べています。
+              対象は{rows.length}条・のべ{totalCount}回。条文名をタップすると本文と出題箇所を確認できます。
+            </>
+          )
         ) : (
           <>{range}の過去問では、{meta.name}を根拠条文とする出題を確認できていません。</>
         )}
       </p>
+
+      <CountBasisNotice lawId={lawId} />
 
       {rows.length === 0 ? (
         <div className="p-4 text-sm text-gray-600 border rounded-lg bg-gray-50">
@@ -160,7 +174,9 @@ export default async function RankingPage({ params }: { params: { lawId: string 
                 </span>
 
                 <span className="flex items-center gap-2 shrink-0">
-                  <span className="text-sm font-bold text-gray-700 whitespace-nowrap">{r.count}回</span>
+                  <span className="text-sm font-bold text-gray-700 whitespace-nowrap">
+                    {countLabel(lawId, r.count)}
+                  </span>
                   <span className="flex flex-wrap gap-1 justify-end max-w-[104px] sm:max-w-none">
                     {r.years.map(y => (
                       <span key={y} className="px-1 py-0.5 text-xs rounded bg-blue-100 text-blue-700 font-medium">

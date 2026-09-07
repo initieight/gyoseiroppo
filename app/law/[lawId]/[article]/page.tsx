@@ -12,12 +12,15 @@ import {
   isDeletedArticle,
   articleHref,
   articleLabel,
+  countBasis,
+  countSentence,
   SITE_NAME,
   type Segment,
   type LawArticle,
 } from '@/lib/laws';
 import { PhraseJumpList, LegendToggle } from './ArticleInteractive';
 import KouzaNudge from '@/components/kouza/KouzaNudge';
+import CountBasisNotice from '@/components/CountBasisNotice';
 
 export const dynamicParams = false;
 
@@ -124,8 +127,10 @@ export async function generateMetadata({
   const description = deleted
     ? `${name}${art.title}（削除）`
     : count > 0
-      ? `${head}${caption}の条文本文。行政書士試験では${EXAM_RANGE}の過去問で${count}回（${years.join('・')}）出題されています。過去問で問われた箇所をハイライト表示。`
-      : `${head}${caption}の条文本文。行政書士試験の過去問（${EXAM_RANGE}）では出題実績がありません。`;
+      ? countBasis(lawId) === 'topic-block'
+        ? `${head}${caption}の条文本文。行政書士試験${EXAM_RANGE}の過去問のうち${count}問に関連する条文です（論点単位の集計・${years.join('・')}）。`
+        : `${head}${caption}の条文本文。行政書士試験では${EXAM_RANGE}の過去問で${count}回（${years.join('・')}）出題されています。過去問で問われた箇所をハイライト表示。`
+      : `${head}${caption}の条文本文。行政書士試験の過去問（${EXAM_RANGE}）では出題実績が確認できていません。`;
 
   return {
     title: { absolute: title },
@@ -205,12 +210,10 @@ export default async function ArticlePage({
       {/* 出題情報 */}
       {count > 0 ? (
         <div className="mb-4 flex flex-wrap items-center gap-2">
-          <span className="text-yellow-500 font-bold text-base" title={`${EXAM_RANGE} 出題${count}回`}>
+          <span className="text-yellow-500 font-bold text-base" title={countSentence(lawId, count)}>
             {starLabel(count)}
           </span>
-          <span className="text-xs text-gray-600">
-            行政書士試験 {EXAM_RANGE} で出題{count}回
-          </span>
+          <span className="text-xs text-gray-600">{countSentence(lawId, count)}</span>
           {years.map(y => (
             <span key={y} className="px-1.5 py-0.5 text-xs rounded bg-blue-100 text-blue-700 font-medium">
               {y}
@@ -219,7 +222,7 @@ export default async function ArticlePage({
         </div>
       ) : (
         <p className="mb-4 text-xs text-gray-500">
-          行政書士試験 {EXAM_RANGE} では出題実績がありません
+          行政書士試験 {EXAM_RANGE} では出題実績が確認できていません
         </p>
       )}
 
@@ -234,13 +237,9 @@ export default async function ArticlePage({
         </div>
       )}
 
-      {/* 試験傾向注記 */}
-      {art.note && (
-        <div className="mb-5 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800 leading-6">
-          <span className="font-semibold">📌 試験傾向：</span>
-          {art.note}
-        </div>
-      )}
+      {/* 試験傾向注記は事実性が未検証のため撤去（データは civil_code.json に残置） */}
+
+      {count > 0 && <CountBasisNotice lawId={lawId} />}
 
       {useSegments && <LegendToggle />}
       {!useSegments && <PhraseJumpList phrases={displayList} />}

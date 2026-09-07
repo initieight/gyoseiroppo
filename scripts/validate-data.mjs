@@ -183,6 +183,43 @@ async function main() {
       }
     }
 
+    // 論点ブロック展開の検出：
+    // count と years が一致するだけなら偶然ありうる（別の条文が同じ回数出ただけ）。
+    // phrases（条文ごとに抽出された出題箇所）まで完全一致する場合に限り、
+    // 1問が条文レンジ全体にコピーされた疑いとして扱う。
+    const sigMap = new Map();
+    for (const [k, v] of Object.entries(hlArts)) {
+      if ((v?.count ?? 0) <= 0) continue;
+      const sig = JSON.stringify([v.count, v.years ?? [], v.questions ?? [], v.phrases ?? []]);
+      if (!sigMap.has(sig)) sigMap.set(sig, []);
+      sigMap.get(sig).push(k);
+    }
+    const clustered = [...sigMap.values()].filter(ks => ks.length > 1);
+    if (clustered.length) {
+      const n = clustered.reduce((s, ks) => s + ks.length, 0);
+      const asked = [...Object.values(hlArts)].filter(v => (v?.count ?? 0) > 0).length;
+      const biggest = clustered.sort((a, b) => b.length - a.length)[0];
+      warn(
+        id,
+        `${n}/${asked}条が他の条文と同一の出題データを持つ（論点ブロック単位で加算された疑い）。` +
+          `最大クラスタ ${biggest.length}条: 第${biggest.slice(0, 6).join('・第')}条`,
+      );
+    }
+
+    // 1問あたり何条に加算されているか
+    const fan = new Map();
+    for (const v of Object.values(hlArts)) {
+      for (const q of v?.questions ?? []) fan.set(q, (fan.get(q) ?? 0) + 1);
+    }
+    if (fan.size) {
+      const total = [...fan.values()].reduce((a, b) => a + b, 0);
+      const avg = total / fan.size;
+      const max = Math.max(...fan.values());
+      if (avg > 2) {
+        warn(id, `1問あたり平均${avg.toFixed(1)}条に加算されている（最大${max}条／実問題数${fan.size}）。出題回数として表示できない`);
+      }
+    }
+
     // 法律名の表記ゆれ（データ側に法律名が紛れていないか）
     if (law.name && law.name !== name) warn(id, `laws の name "${law.name}" がマスタの "${name}" と不一致`);
   }

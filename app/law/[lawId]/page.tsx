@@ -10,10 +10,13 @@ import {
   getHighlightData,
   sortedArticleKeys,
   articleHref,
+  countBasis,
+  countLabel,
 } from '@/lib/laws';
 import { getRank } from '@/components/RankBadge';
 import LawListClient, { type ArticleRow } from './LawListClient';
 import KouzaNudge from '@/components/kouza/KouzaNudge';
+import CountBasisNotice from '@/components/CountBasisNotice';
 
 export const dynamicParams = false;
 
@@ -88,7 +91,8 @@ export default async function LawListPage({ params }: { params: { lawId: string 
       </h1>
       <p className="text-sm text-gray-600 leading-6 mb-1">{meta.shortDesc}</p>
       <p className="text-xs text-gray-400 mb-5">
-        全{articles.length}条 ／ {EXAM_RANGE} で {askedCount}条が出題
+        全{articles.length}条 ／ {EXAM_RANGE} で {askedCount}条に出題実績
+        {countBasis(lawId) === 'topic-block' && '（論点単位の集計）'}
       </p>
 
       {hasRanking && (
@@ -101,7 +105,12 @@ export default async function LawListPage({ params }: { params: { lawId: string 
         </Link>
       )}
 
-      <LawListClient articles={articles} />
+      <CountBasisNotice lawId={lawId} />
+
+      <LawListClient
+        articles={articles}
+        countLabels={Object.fromEntries(articles.map(a => [a.key, countLabel(lawId, a.count)]))}
+      />
 
       {/* 他の法律へ */}
       <section className="mt-12 pt-6 border-t border-gray-100">

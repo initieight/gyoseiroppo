@@ -132,3 +132,31 @@ export function articleLabel(key: string): string | null {
   const [head, ...rest] = key.split('の');
   return `第${head}条${rest.map(r => `の${r}`).join('')}`;
 }
+
+// ── 出題データの集計単位 ─────────────────────────────────────
+/**
+ * 出題データの集計単位。法令によって count の意味が違う。
+ *
+ *  'question'    : 1問＝1カウント。条文と問題が1対1で対応している（民法以外の10法令）
+ *  'topic-block' : 1問が論点ブロック内の複数条文に加算されている（民法のみ）
+ *                  1問あたり平均7.4条・最大36条に展開されており、
+ *                  「出題回数」としては読めない。データの作り直しが必要。
+ *                  それまでの暫定措置として、表示の文言を分けている。
+ */
+export type CountBasis = 'question' | 'topic-block';
+
+export function countBasis(lawId: string): CountBasis {
+  return lawId === 'civil_code' ? 'topic-block' : 'question';
+}
+
+/** 一覧・ランキングで使う短いラベル */
+export function countLabel(lawId: string, n: number): string {
+  return countBasis(lawId) === 'topic-block' ? `関連${n}問` : `${n}回`;
+}
+
+/** 条文ページで使う一文 */
+export function countSentence(lawId: string, n: number): string {
+  return countBasis(lawId) === 'topic-block'
+    ? `${EXAM_RANGE}の過去問のうち${n}問に関連（論点単位の集計）`
+    : `行政書士試験 ${EXAM_RANGE} で出題${n}回`;
+}
