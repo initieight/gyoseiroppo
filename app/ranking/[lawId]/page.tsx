@@ -1,59 +1,28 @@
-'use client';
-
-import { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'next/navigation';
+import type { Metadata } from 'next';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import {
+  LAWS,
+  EXAM_RANGE,
+  isLawId,
+  lawMeta,
+  getLawData,
+  getHighlightData,
+  articleSortKey,
+  articleHref,
+  articleLabel,
+} from '@/lib/laws';
 
-interface LawArticle {
-  title: string;
-  caption?: string;
-}
+export const dynamicParams = false;
 
-interface LawData {
-  lawId: string;
-  articles: Record<string, LawArticle>;
-}
-
-interface HighlightArticle {
-  count: number;
-  years: string[];
-  questions?: string[];
-}
-
-interface HighlightData {
-  lawId: string;
-  range: string[];
-  articles: Record<string, HighlightArticle>;
-}
-
-const LAW_NAMES: Record<string, string> = {
-  constitution:       '憲法',
-  civil_code:         '民法',
-  commercial_code:    '商法',
-  company_act:        '会社法',
-  admin_procedure:    '行政手続法',
-  admin_appeal:       '行政不服審査法',
-  admin_litigation:   '行政事件訴訟法',
-  state_liability:    '国家賠償法',
-  admin_enforcement:  '行政代執行法',
-  national_admin_org: '国家行政組織法',
-  local_autonomy:     '地方自治法',
-};
-
-/** 404 でも落ちない fetch。失敗時は fallback を返す */
-async function fetchJson<T>(url: string, fallback: T): Promise<T> {
-  try {
-    const r = await fetch(url, { cache: 'no-store' });
-    if (!r.ok) return fallback;
-    return r.json() as Promise<T>;
-  } catch {
-    return fallback;
-  }
+export function generateStaticParams() {
+  return LAWS.map(l => ({ lawId: l.id }));
 }
 
 type RankRow = {
   rank: number;
   key: string;
+  href: string;
   title: string;
   caption?: string;
   count: number;
@@ -61,139 +30,175 @@ type RankRow = {
   questions: string[];
 };
 
-export default function RankingPage() {
-  const params = useParams();
-  const lawId = (params.lawId as string) ?? '';
+async function buildRows(lawId: string): Promise<{ rows: RankRow[]; range: string }> {
+  const [hl, lawData] = await Promise.all([getHighlightData(lawId), getLawData(lawId)]);
 
-  const [hlData, setHlData] = useState<HighlightData | null>(null);
-  const [lawData, setLawData] = useState<LawData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const entries = Object.entries(hl.articles ?? {})
+    .filter(([, v]) => (v?.count ?? 0) > 0)
+    .map(([key, v]) => ({
+      key,
+      href: articleHref(lawId, key),
+      title: lawData.articles?.[key]?.title ?? `第${key}条`,
+      caption: lawData.articles?.[key]?.caption || undefined,
+      count: v.count,
+      years: v.years ?? [],
+      questions: Array.from(new Set(v.questions ?? [])),
+    }));
 
-  useEffect(() => {
-    if (!lawId) return;
+  entries.sort((a, b) =>
+    b.count !== a.count ? b.count - a.count : articleSortKey(a.key) - articleSortKey(b.key),
+  );
 
-    const emptyHl: HighlightData = { lawId, range: [], articles: {} };
-    const emptyLaw: LawData = { lawId, articles: {} };
+  const range = hl.range?.length
+    ? `${hl.range[0]}〜${hl.range[hl.range.length - 1]}`
+    : EXAM_RANGE;
 
-    Promise.all([
-      fetchJson<HighlightData>(`/highlights/r2_r7_${lawId}.json`, emptyHl),
-      fetchJson<LawData>(`/laws/${lawId}.json`, emptyLaw),
-    ])
-      .then(([hl, law]) => {
-        setHlData(hl);
-        setLawData(law);
-      })
-      .catch(e => setError((e as Error).message))
-      .finally(() => setLoading(false));
-  }, [lawId]);
+  return { rows: entries.map((e, i) => ({ rank: i + 1, ...e })), range };
+}
 
-  const rows: RankRow[] = useMemo(() => {
-    if (!hlData) return [];
+export async function generateMetadata({
+  params,
+}: {
+  params: { lawId: string };
+}): Promise<Metadata> {
+  if (!isLawId(params.lawId)) return { title: 'ページが見つかりません' };
+  const meta = lawMeta(params.lawId)!;
+  const { rows, range } = await buildRows(params.lawId);
 
-    const entries = Object.entries(hlData.articles ?? {})
-      .filter(([, v]) => (v?.count ?? 0) > 0)
-      .map(([key, v]) => ({
-        key,
-        title: lawData?.articles?.[key]?.title ?? `第${key}条`,
-        caption: lawData?.articles?.[key]?.caption,
-        count: v.count,
-        years: v.years ?? [],
-        questions: v.questions ?? [],
-      }));
+  const top = rows
+    .slice(0, 3)
+    .map(r => articleLabel(r.key) ?? r.title)
+    .join('・');
+  const title = `${meta.name} 出題ランキング｜行政書士試験の過去問${range}`;
+  const description = rows.length
+    ? `行政書士試験の過去問（${range}）で${meta.name}から出題された${rows.length}条を、出題回数の多い順にランキング表示。最頻出は${top}。条文本文と出題年度も確認できます。`
+    : `行政書士試験の過去問（${range}）における${meta.name}の出題実績。現在集計対象の出題はありません。`;
 
-    // count 降順 → 同率は条番号昇順（数値として比較）
-    entries.sort((a, b) => {
-      if (b.count !== a.count) return b.count - a.count;
-      return parseInt(a.key, 10) - parseInt(b.key, 10);
-    });
+  return {
+    title: { absolute: title },
+    description,
+    alternates: { canonical: `/ranking/${params.lawId}` },
+    robots: rows.length === 0 ? { index: false, follow: true } : undefined,
+    openGraph: { title, description, url: `/ranking/${params.lawId}` },
+  };
+}
 
-    return entries.map((e, i) => ({ rank: i + 1, ...e }));
-  }, [hlData, lawData]);
+export default async function RankingPage({ params }: { params: { lawId: string } }) {
+  const { lawId } = params;
+  if (!isLawId(lawId)) notFound();
 
-  if (loading) return <div className="p-6 text-gray-500">読み込み中...</div>;
-  if (error) return <div className="p-6 text-red-500">{error}</div>;
-
-  const lawName = LAW_NAMES[lawId] ?? lawId;
-  const rangeLabel = hlData?.range?.length
-    ? `${hlData.range[0]}〜${hlData.range[hlData.range.length - 1]}`
-    : '';
+  const meta = lawMeta(lawId)!;
+  const { rows, range } = await buildRows(lawId);
+  const totalCount = rows.reduce((s, r) => s + r.count, 0);
 
   return (
-    <main className="max-w-2xl mx-auto px-4 py-8">
-      {/* ヘッダ */}
-      <div className="flex items-center justify-between gap-3 mb-6">
-        <Link href={`/law/${lawId}`} className="text-sm text-blue-600 hover:underline">
-          ← 条文一覧へ
-        </Link>
-        <Link href="/law" className="text-sm text-blue-600 hover:underline">
-          法律選択へ
-        </Link>
-      </div>
+    <main className="max-w-2xl mx-auto px-4 py-6 pb-16">
+      {/* パンくず */}
+      <nav aria-label="パンくず" className="mb-4 text-xs text-gray-500">
+        <Link href="/" className="text-blue-600 hover:underline">トップ</Link>
+        <span className="mx-1.5 text-gray-300">/</span>
+        <Link href={`/law/${lawId}`} className="text-blue-600 hover:underline">{meta.name}</Link>
+        <span className="mx-1.5 text-gray-300">/</span>
+        <span className="text-gray-700">出題ランキング</span>
+      </nav>
 
-      <h1 className="text-xl font-bold text-gray-800 mb-0.5">{lawName} 出題ランキング</h1>
-      {rangeLabel && (
-        <p className="text-xs text-gray-400 mb-6">{rangeLabel} 出題実績</p>
-      )}
+      <h1 className="text-xl font-bold text-gray-800 mb-1">
+        {meta.name} 出題ランキング（行政書士試験 {range}）
+      </h1>
+      <p className="text-sm text-gray-600 leading-6 mb-6">
+        {rows.length > 0 ? (
+          <>
+            行政書士試験の過去問{range}から抽出した{meta.name}の根拠条文を、出題回数順に並べています。
+            対象は{rows.length}条・のべ{totalCount}回。条文名をタップすると本文と出題箇所を確認できます。
+          </>
+        ) : (
+          <>{range}の過去問では、{meta.name}を根拠条文とする出題を確認できていません。</>
+        )}
+      </p>
 
       {rows.length === 0 ? (
-        <div className="p-4 text-gray-500 border rounded-lg">出題データがありません</div>
+        <div className="p-4 text-sm text-gray-600 border rounded-lg bg-gray-50">
+          出題データがありません。
+          <Link href={`/law/${lawId}`} className="ml-1 text-blue-600 hover:underline">
+            {meta.name}の条文一覧を見る →
+          </Link>
+        </div>
       ) : (
-        <ul className="divide-y divide-gray-100 border border-gray-100 rounded-lg overflow-hidden">
+        <ol className="divide-y divide-gray-100 border border-gray-100 rounded-lg overflow-hidden">
           {rows.map(r => (
             <li key={r.key}>
               <Link
-                href={`/law/${lawId}/${r.key}`}
-                className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                href={r.href}
+                className="flex items-center gap-3 px-3 py-3 min-h-[56px] hover:bg-gray-50 active:bg-gray-100 transition-colors"
               >
-                {/* 順位バッジ */}
-                <span className={`shrink-0 w-9 text-center font-mono text-sm font-bold ${
-                  r.rank === 1 ? 'text-yellow-500' :
-                  r.rank === 2 ? 'text-gray-400' :
-                  r.rank === 3 ? 'text-amber-600' : 'text-gray-400'
-                }`}>
+                <span
+                  className={`shrink-0 w-9 text-center font-mono text-sm font-bold ${
+                    r.rank === 1 ? 'text-yellow-500'
+                    : r.rank === 2 ? 'text-gray-400'
+                    : r.rank === 3 ? 'text-amber-600'
+                    : 'text-gray-400'
+                  }`}
+                >
                   #{r.rank}
                 </span>
 
-                {/* 条文名 */}
-                <div className="flex-1 min-w-0">
-                  <div>
+                <span className="flex-1 min-w-0">
+                  <span className="block">
                     <span className="font-semibold text-gray-800 text-sm">{r.title}</span>
-                    {r.caption && (
-                      <span className="ml-2 text-xs text-gray-500">{r.caption}</span>
-                    )}
-                  </div>
-                  {/* 出題問題番号タグ（民法） */}
+                    {r.caption && <span className="ml-2 text-xs text-gray-500">{r.caption}</span>}
+                  </span>
                   {r.questions.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {Array.from(new Set(r.questions)).slice(0, 6).map(q => (
+                    <span className="flex flex-wrap gap-1 mt-1">
+                      {r.questions.slice(0, 6).map(q => (
                         <span key={q} className="px-1 py-0.5 text-[10px] rounded bg-purple-50 text-purple-600">
                           {q}
                         </span>
                       ))}
-                    </div>
+                    </span>
                   )}
-                </div>
+                </span>
 
-                {/* 出題回数 + 年度タグ */}
-                <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-sm font-bold text-gray-700">{r.count}回</span>
-                  <div className="flex flex-wrap gap-1 justify-end">
+                <span className="flex items-center gap-2 shrink-0">
+                  <span className="text-sm font-bold text-gray-700 whitespace-nowrap">{r.count}回</span>
+                  <span className="flex flex-wrap gap-1 justify-end max-w-[104px] sm:max-w-none">
                     {r.years.map(y => (
-                      <span
-                        key={y}
-                        className="px-1 py-0.5 text-xs rounded bg-blue-100 text-blue-700 font-medium"
-                      >
+                      <span key={y} className="px-1 py-0.5 text-xs rounded bg-blue-100 text-blue-700 font-medium">
                         {y}
                       </span>
                     ))}
-                  </div>
-                </div>
+                  </span>
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ol>
+      )}
+
+      <div className="mt-8">
+        <Link
+          href={`/law/${lawId}`}
+          className="inline-flex items-center min-h-[48px] px-4 rounded-lg border border-gray-200 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+        >
+          ← {meta.name} 条文一覧へ
+        </Link>
+      </div>
+
+      {/* 他の法律のランキング */}
+      <section className="mt-12 pt-6 border-t border-gray-100">
+        <h2 className="text-sm font-semibold text-gray-500 mb-3">ほかの法律の出題ランキング</h2>
+        <ul className="grid grid-cols-2 gap-2">
+          {LAWS.filter(l => l.id !== lawId).map(l => (
+            <li key={l.id}>
+              <Link
+                href={`/ranking/${l.id}`}
+                className="block px-3 py-3 rounded-lg border border-gray-200 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+              >
+                {l.name}
               </Link>
             </li>
           ))}
         </ul>
-      )}
+      </section>
     </main>
   );
 }

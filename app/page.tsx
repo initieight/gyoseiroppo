@@ -1,52 +1,91 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import InstallPrompt from '@/components/InstallPrompt';
+import { LAWS, EXAM_RANGE, SITE_NAME, getLawData, getHighlightData } from '@/lib/laws';
 
-const LAWS = [
-  { id: 'constitution',       name: '憲法',            href: '/law/constitution' },
-  { id: 'admin_procedure',    name: '行政手続法',      href: '/law/admin_procedure' },
-  { id: 'admin_appeal',       name: '行政不服審査法',  href: '/law/admin_appeal' },
-  { id: 'admin_litigation',   name: '行政事件訴訟法',  href: '/law/admin_litigation' },
-  { id: 'state_liability',    name: '国家賠償法',      href: '/law/state_liability' },
-  { id: 'admin_enforcement',  name: '行政代執行法',    href: '/law/admin_enforcement' },
-  { id: 'national_admin_org', name: '国家行政組織法',  href: '/law/national_admin_org' },
-  { id: 'local_autonomy',     name: '地方自治法',      href: '/law/local_autonomy' },
-  { id: 'civil_code',         name: '民法',            href: '/law/civil_code' },
-  { id: 'commercial_code',    name: '商法',            href: '/law/commercial_code' },
-  { id: 'company_act',        name: '会社法',          href: '/law/company_act' },
-] as const;
+export const metadata: Metadata = {
+  alternates: { canonical: '/' },
+};
 
-export default function Home() {
+export default async function Home() {
+  const stats = await Promise.all(
+    LAWS.map(async law => {
+      const [lawData, hl] = await Promise.all([getLawData(law.id), getHighlightData(law.id)]);
+      const asked = Object.values(hl.articles ?? {}).filter(a => (a?.count ?? 0) > 0).length;
+      return { ...law, total: Object.keys(lawData.articles).length, asked };
+    }),
+  );
+
+  const totalArticles = stats.reduce((s, l) => s + l.total, 0);
+
   return (
-    <main className="min-h-screen px-4 py-12 bg-gray-50">
+    <main className="min-h-screen px-4 py-10 pb-16 bg-gray-50">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold text-blue-800 mb-2">
-          行政書士過去問六法（β）
+        <h1 className="text-2xl sm:text-3xl font-bold text-blue-800 mb-3 leading-8">
+          {SITE_NAME}｜過去問の出題条文がわかる無料Web六法
         </h1>
-        <p className="text-sm text-gray-500 mb-10 leading-6">
-          条文の出題射程を可視化した六法です。<br />
-          過去問から抽出した根拠条文をもとに<br />
-          出題箇所と出題頻度を表示します。
+        <p className="text-sm text-gray-700 leading-7 mb-6">
+          行政書士試験の過去問（{EXAM_RANGE}）から抽出した根拠条文を、条文本文と一緒に表示します。
+          条文ごとに「何回・どの年度に出たか」が分かるので、条文集を頭から読むより出題箇所を優先して潰せます。
+          {LAWS.length}法令・全{totalArticles.toLocaleString('ja-JP')}条を収録。登録不要・無料です。
         </p>
 
         <InstallPrompt />
 
-        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 mt-8">
-          法律を選ぶ
+        <h2 className="text-sm font-semibold text-gray-500 tracking-wide mb-3 mt-8">
+          法律から条文を探す
         </h2>
 
-        <ul className="space-y-3">
-          {LAWS.map(law => (
+        <ul className="space-y-2">
+          {stats.map(law => (
             <li key={law.id}>
               <Link
-                href={law.href}
-                className="flex items-center justify-between gap-3 px-5 py-4 rounded-xl bg-white border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors shadow-sm"
+                href={`/law/${law.id}`}
+                className="flex items-center justify-between gap-3 px-4 py-4 min-h-[64px] rounded-xl bg-white border border-gray-200 hover:border-blue-300 hover:bg-blue-50 active:bg-blue-100 transition-colors shadow-sm"
               >
-                <span className="font-semibold text-gray-800">{law.name}</span>
+                <span className="min-w-0">
+                  <span className="block font-semibold text-gray-800">{law.name}</span>
+                  <span className="block text-[11px] text-gray-500 mt-0.5">
+                    全{law.total}条 ／ {EXAM_RANGE}で{law.asked}条が出題
+                  </span>
+                </span>
                 <span className="text-gray-400 text-xl shrink-0">›</span>
               </Link>
             </li>
           ))}
         </ul>
+
+        <h2 className="text-sm font-semibold text-gray-500 tracking-wide mb-3 mt-10">
+          出題ランキングから探す
+        </h2>
+        <p className="text-xs text-gray-500 leading-6 mb-3">
+          過去問{EXAM_RANGE}で出題回数の多かった条文順に並べたページです。
+        </p>
+        <ul className="grid grid-cols-2 gap-2">
+          {LAWS.map(law => (
+            <li key={law.id}>
+              <Link
+                href={`/ranking/${law.id}`}
+                className="block px-3 py-3 min-h-[48px] rounded-lg bg-white border border-gray-200 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+              >
+                {law.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        <section className="mt-12 pt-6 border-t border-gray-200">
+          <h2 className="text-sm font-semibold text-gray-500 mb-3">このサイトについて</h2>
+          <div className="text-xs text-gray-500 leading-6 space-y-2">
+            <p>
+              条文本文は e-Gov 法令検索の法令データをもとにしています。出題実績は行政書士試験の
+              過去問（{EXAM_RANGE}）を独自に分析して根拠条文を割り当てたもので、公式の集計ではありません。
+              集計方法上、取りこぼしや誤りが含まれる場合があります。最終確認は必ず一次情報（e-Gov・試験センター）
+              で行ってください。
+            </p>
+            <p>β版のため、データとページは順次追加・修正しています。</p>
+          </div>
+        </section>
       </div>
     </main>
   );

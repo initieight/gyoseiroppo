@@ -1,90 +1,56 @@
-'use client';
-
-import { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'next/navigation';
+import type { Metadata } from 'next';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import {
+  EXAM_RANGE,
+  LAWS,
+  isLawId,
+  lawMeta,
+  getLawData,
+  getHighlightData,
+  sortedArticleKeys,
+  isDeletedArticle,
+  articleHref,
+  articleLabel,
+  SITE_NAME,
+  type Segment,
+  type LawArticle,
+} from '@/lib/laws';
+import { PhraseJumpList, LegendToggle } from './ArticleInteractive';
 
-// ── 型定義 ────────────────────────────────────────────────────
-interface Segment {
-  type: 'req' | 'eff' | 'plain';
-  text: string;
-}
+export const dynamicParams = false;
 
-interface LawArticle {
-  title: string;
-  caption?: string;
-  text: string;
-  segments?: Segment[];   // 民法のみ: 要件・効果セグメント
-  note?: string;          // 民法のみ: 試験傾向注記
-}
-
-interface LawData {
-  lawId: string;
-  articles: Record<string, LawArticle>;
-}
-
-interface HighlightArticle {
-  count: number;
-  years: string[];
-  phrases: string[];
-  questions?: string[];
-}
-
-interface HighlightData {
-  lawId: string;
-  range: string[];
-  articles: Record<string, HighlightArticle>;
-}
-
-// ── 定数 ──────────────────────────────────────────────────────
-const LAW_NAMES: Record<string, string> = {
-  constitution:       '憲法',
-  civil_code:         '民法',
-  commercial_code:    '商法',
-  company_act:        '会社法',
-  admin_procedure:    '行政手続法',
-  admin_appeal:       '行政不服審査法',
-  admin_litigation:   '行政事件訴訟法',
-  state_liability:    '国家賠償法',
-  admin_enforcement:  '行政代執行法',
-  national_admin_org: '国家行政組織法',
-  local_autonomy:     '地方自治法',
-};
-
-// ── ユーティリティ ────────────────────────────────────────────
-function starLabel(count: number): string {
-  if (count <= 0) return '';
-  return '★'.repeat(Math.min(count, 3));
-}
-
-async function fetchJson<T>(url: string, fallback: T): Promise<T> {
-  try {
-    const r = await fetch(url, { cache: 'no-store' });
-    if (!r.ok) return fallback;
-    return r.json() as Promise<T>;
-  } catch {
-    return fallback;
+export async function generateStaticParams() {
+  const params: { lawId: string; article: string }[] = [];
+  for (const law of LAWS) {
+    const data = await getLawData(law.id);
+    for (const key of Object.keys(data.articles)) {
+      params.push({ lawId: law.id, article: key });
+    }
   }
+  return params;
 }
 
+// ── HTML 生成 ────────────────────────────────────────────────
 function escHtml(s: string): string {
-  return s
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-// ── フォールバック用: フレーズハイライト（民法以外の法律）────
+/** フレーズ（出題箇所）をハイライトし、ジャンプ用の id を振る */
 function applyPhrasesWithAnchors(rawText: string, phrases: string[]) {
-  const cleaned = (phrases ?? []).map(p => (p ?? '').trim()).filter(p => p.length > 0);
-  const unique = Array.from(new Set(cleaned));
-  const withPos = unique
-    .map((p, idx) => ({ p, pos: rawText.indexOf(p) === -1 ? Number.MAX_SAFE_INTEGER : rawText.indexOf(p), idx }))
-    .sort((a, b) => a.pos !== b.pos ? a.pos - b.pos : a.idx - b.idx);
-  const displayList = withPos.map(x => x.p);
+  const unique = Array.from(
+    new Set((phrases ?? []).map(p => (p ?? '').trim()).filter(p => p.length > 0)),
+  );
+  const displayList = unique
+    .map((p, idx) => {
+      const pos = rawText.indexOf(p);
+      return { p, pos: pos === -1 ? Number.MAX_SAFE_INTEGER : pos, idx };
+    })
+    .sort((a, b) => (a.pos !== b.pos ? a.pos - b.pos : a.idx - b.idx))
+    .map(x => x.p);
+
   let html = escHtml(rawText);
-  const replaceOrder = [...displayList].sort((a, b) => b.length - a.length);
-  for (const phrase of replaceOrder) {
+  for (const phrase of [...displayList].sort((a, b) => b.length - a.length)) {
     const esc = escHtml(phrase);
     if (!esc || !html.includes(esc)) continue;
     html = html.split(esc).join(`<span class="hl">${esc}</span>`);
@@ -95,136 +61,155 @@ function applyPhrasesWithAnchors(rawText: string, phrases: string[]) {
     if (!esc || !html.includes(token)) continue;
     html = html.replace(token, `<span class="hl" id="hl-${i}">${esc}</span>`);
   }
-  html = html.replace(/\n/g, '<br>');
-  return { html, displayList };
+  return { html: html.replace(/\n/g, '<br>'), displayList };
 }
 
-// ── 要件・効果セグメントをHTMLに変換 ─────────────────────────
 function segmentsToHtml(segments: Segment[]): string {
-  return segments.map(seg => {
-    const t = escHtml(seg.text);
-    if (seg.type === 'req') return `<span class="seg-req">${t}</span>`;
-    if (seg.type === 'eff') return `<span class="seg-eff">${t}</span>`;
-    // plain: 改行を<br>に変換
-    return t.replace(/\n/g, '<br>');
-  }).join('');
+  return segments
+    .map(seg => {
+      const t = escHtml(seg.text);
+      if (seg.type === 'req') return `<span class="seg-req">${t}</span>`;
+      if (seg.type === 'eff') return `<span class="seg-eff">${t}</span>`;
+      return t.replace(/\n/g, '<br>');
+    })
+    .join('');
 }
 
-// ── メインコンポーネント ──────────────────────────────────────
-export default function ArticlePage() {
-  const params = useParams();
-  const lawId = (params.lawId as string) ?? '';
-  const articleKey = decodeURIComponent((params.article as string) ?? '');
+/**
+ * 要件・効果ハイライトを出すかどうか。
+ * 条文全体が片方の色で塗られると情報量がゼロで誤解を招くため、
+ * 「要件と効果の両方が抽出できている条文」だけで表示する。
+ */
+function hasUsefulSegments(art: LawArticle): boolean {
+  const types = new Set(
+    (art.segments ?? []).filter(s => (s.text ?? '').trim().length > 0).map(s => s.type),
+  );
+  return types.has('req') && types.has('eff');
+}
 
-  const [lawArticle, setLawArticle]   = useState<LawArticle | null>(null);
-  const [highlight, setHighlight]     = useState<HighlightArticle | null>(null);
-  const [loading, setLoading]         = useState(true);
-  const [error, setError]             = useState<string | null>(null);
-  const [showLegend, setShowLegend]   = useState(false);
+function starLabel(count: number): string {
+  return count <= 0 ? '' : '★'.repeat(Math.min(count, 3));
+}
 
-  useEffect(() => {
-    if (!lawId || !articleKey) return;
-    let cancelled = false;
-    setLoading(true);
-    setError(null);
+// ── メタデータ ───────────────────────────────────────────────
+export async function generateMetadata({
+  params,
+}: {
+  params: { lawId: string; article: string };
+}): Promise<Metadata> {
+  const { lawId } = params;
+  const articleKey = decodeURIComponent(params.article);
+  if (!isLawId(lawId)) return { title: 'ページが見つかりません' };
 
-    const emptyHl: HighlightData = { lawId, range: [], articles: {} };
+  const [lawData, hl] = await Promise.all([getLawData(lawId), getHighlightData(lawId)]);
+  const art = lawData.articles[articleKey];
+  if (!art) return { title: 'ページが見つかりません' };
 
-    Promise.all([
-      fetch(`/laws/${lawId}.json`, { cache: 'no-store' }).then(r => {
-        if (!r.ok) throw new Error(`laws/${lawId}.json が見つかりません (${r.status})`);
-        return r.json() as Promise<LawData>;
-      }),
-      fetchJson<HighlightData>(`/highlights/r2_r7_${lawId}.json`, emptyHl),
-    ])
-      .then(([lawData, hlData]) => {
-        if (cancelled) return;
-        const art = lawData.articles?.[articleKey];
-        if (!art) { setError(`${articleKey} のデータが見つかりません`); return; }
-        setLawArticle(art);
-        setHighlight(hlData.articles?.[articleKey] ?? null);
-      })
-      .catch(e => { if (!cancelled) setError((e as Error).message); })
-      .finally(() => { if (!cancelled) setLoading(false); });
+  const name = lawMeta(lawId)!.name;
+  const h = hl.articles?.[articleKey];
+  const count = h?.count ?? 0;
+  const years = h?.years ?? [];
+  const deleted = isDeletedArticle(art);
 
-    return () => { cancelled = true; };
-  }, [lawId, articleKey]);
+  // タイトルは検索結果で切れない長さに抑える（全角30字前後を上限とする）
+  const head = `${name}${articleLabel(articleKey) ?? art.title}`;
+  const caption = art.caption ?? '';
+  const len = head.length + caption.length;
+  const title =
+    caption && len <= 25 ? `${head}${caption}｜${SITE_NAME}`
+    : caption && len <= 34 ? `${head}${caption}`
+    : `${head}｜行政書士試験の出題条文`;
 
-  const count     = highlight?.count ?? 0;
-  const years     = highlight?.years ?? [];
-  const phrases   = highlight?.phrases ?? [];
-  const questions = highlight?.questions ?? [];
+  const description = deleted
+    ? `${name}${art.title}（削除）`
+    : count > 0
+      ? `${head}${caption}の条文本文。行政書士試験では${EXAM_RANGE}の過去問で${count}回（${years.join('・')}）出題されています。過去問で問われた箇所をハイライト表示。`
+      : `${head}${caption}の条文本文。行政書士試験の過去問（${EXAM_RANGE}）では出題実績がありません。`;
 
-  const isCivilCode = lawId === 'civil_code';
-  const hasSegments = isCivilCode && (lawArticle?.segments?.length ?? 0) > 0;
-  const hasNote     = isCivilCode && !!lawArticle?.note;
-
-  // HTMLを構築（民法: segmentsベース / その他: フレーズハイライト）
-  const { articleHtml, displayPhrases } = useMemo(() => {
-    if (!lawArticle) return { articleHtml: '', displayPhrases: [] as string[] };
-    if (hasSegments) {
-      return { articleHtml: segmentsToHtml(lawArticle.segments!), displayPhrases: [] };
-    }
-    const { html, displayList } = applyPhrasesWithAnchors(lawArticle.text ?? '', phrases);
-    return { articleHtml: html, displayPhrases: displayList };
-  }, [lawArticle, phrases, hasSegments]);
-
-  const jumpTo = (idx: number) => {
-    document.getElementById(`hl-${idx}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  return {
+    title: { absolute: title },
+    description,
+    alternates: { canonical: articleHref(lawId, articleKey) },
+    // 「削除」だけの条文は中身が無いのでインデックス対象外
+    robots: deleted ? { index: false, follow: true } : undefined,
+    openGraph: { title, description, url: articleHref(lawId, articleKey) },
   };
+}
 
-  if (loading) return <div className="p-6 text-gray-500">読み込み中...</div>;
-  if (error || !lawArticle) return <div className="p-6 text-red-500">{error ?? '条文が見つかりません'}</div>;
+// ── ページ ───────────────────────────────────────────────────
+export default async function ArticlePage({
+  params,
+}: {
+  params: { lawId: string; article: string };
+}) {
+  const { lawId } = params;
+  const articleKey = decodeURIComponent(params.article);
+  if (!isLawId(lawId)) notFound();
 
-  const lawName = LAW_NAMES[lawId] ?? lawId;
+  const [lawData, hl] = await Promise.all([getLawData(lawId), getHighlightData(lawId)]);
+  const art = lawData.articles[articleKey];
+  if (!art) notFound();
+
+  const meta = lawMeta(lawId)!;
+  const h = hl.articles?.[articleKey];
+  const count = h?.count ?? 0;
+  const years = h?.years ?? [];
+  const phrases = h?.phrases ?? [];
+  const questions = Array.from(new Set(h?.questions ?? []));
+
+  const useSegments = hasUsefulSegments(art);
+  const { html: phraseHtml, displayList } = useSegments
+    ? { html: '', displayList: [] as string[] }
+    : applyPhrasesWithAnchors(art.text ?? '', phrases);
+  const articleHtml = useSegments ? segmentsToHtml(art.segments!) : phraseHtml;
+
+  // 前後の条文
+  const keys = sortedArticleKeys(lawData);
+  const idx = keys.indexOf(articleKey);
+  const prevKey = idx > 0 ? keys[idx - 1] : null;
+  const nextKey = idx >= 0 && idx < keys.length - 1 ? keys[idx + 1] : null;
+  const prevArt = prevKey ? lawData.articles[prevKey] : null;
+  const nextArt = nextKey ? lawData.articles[nextKey] : null;
+
+  const hasRanking = Object.values(hl.articles ?? {}).some(a => (a?.count ?? 0) > 0);
 
   return (
-    <main className="max-w-2xl mx-auto px-4 py-8">
-      {/* ── CSS ─────────────────────────────────────────────── */}
+    <main className="max-w-2xl mx-auto px-4 py-6 pb-16">
       <style>{`
-        /* 既存のフレーズハイライト */
         .hl { background: #fef08a; border-radius: 2px; padding: 0 1px; }
-
-        /* 民法: 要件（黄）・効果（緑）ハイライト */
-        .seg-req {
-          background: #fef9c3;
-          border-bottom: 2px solid #eab308;
-          border-radius: 2px;
-          padding: 0 1px;
-        }
-        .seg-eff {
-          background: #dcfce7;
-          border-bottom: 2px solid #16a34a;
-          border-radius: 2px;
-          padding: 0 1px;
-        }
+        .seg-req { background: #fef9c3; border-bottom: 2px solid #eab308; border-radius: 2px; padding: 0 1px; }
+        .seg-eff { background: #dcfce7; border-bottom: 2px solid #16a34a; border-radius: 2px; padding: 0 1px; }
       `}</style>
 
-      {/* ── ナビ ─────────────────────────────────────────────── */}
-      <div className="flex items-center justify-between gap-3 mb-6">
-        <Link href={`/law/${lawId}`} className="text-sm text-blue-600 hover:underline">
-          ← 条文一覧へ
-        </Link>
-        <Link href={`/ranking/${lawId}`} className="text-sm text-blue-600 hover:underline">
-          ランキングへ →
-        </Link>
-      </div>
+      {/* パンくず */}
+      <nav aria-label="パンくず" className="mb-4 text-xs text-gray-500">
+        <Link href="/" className="text-blue-600 hover:underline">トップ</Link>
+        <span className="mx-1.5 text-gray-300">/</span>
+        <Link href={`/law/${lawId}`} className="text-blue-600 hover:underline">{meta.name}</Link>
+        <span className="mx-1.5 text-gray-300">/</span>
+        <span className="text-gray-700">{articleLabel(articleKey) ?? art.title}</span>
+      </nav>
 
-      {/* ── タイトル ────────────────────────────────────────── */}
-      <div className="mb-1 text-xs text-gray-400 uppercase tracking-wide">{lawName}</div>
-      <h1 className="text-xl font-bold text-gray-800 mb-0.5">{lawArticle.title}</h1>
-      {lawArticle.caption
-        ? <p className="text-sm text-gray-500 mb-4">{lawArticle.caption}</p>
-        : <div className="mb-4" />
-      }
+      {/* タイトル */}
+      <h1 className="text-xl font-bold text-gray-800 mb-0.5">
+        {meta.name} {art.title}
+        {articleLabel(articleKey) && (
+          <span className="ml-2 text-sm font-normal text-gray-400">
+            （{meta.name}{articleLabel(articleKey)!.replace('第', '')}）
+          </span>
+        )}
+      </h1>
+      {art.caption && <p className="text-sm text-gray-600 mb-3">{art.caption}</p>}
 
-      {/* ── 出題情報 ────────────────────────────────────────── */}
+      {/* 出題情報 */}
       {count > 0 ? (
         <div className="mb-4 flex flex-wrap items-center gap-2">
-          <span className="text-yellow-500 font-bold text-base" title={`R2〜R7 出題${count}回`}>
+          <span className="text-yellow-500 font-bold text-base" title={`${EXAM_RANGE} 出題${count}回`}>
             {starLabel(count)}
           </span>
-          <span className="text-xs text-gray-500">出題{count}回</span>
+          <span className="text-xs text-gray-600">
+            行政書士試験 {EXAM_RANGE} で出題{count}回
+          </span>
           {years.map(y => (
             <span key={y} className="px-1.5 py-0.5 text-xs rounded bg-blue-100 text-blue-700 font-medium">
               {y}
@@ -232,13 +217,13 @@ export default function ArticlePage() {
           ))}
         </div>
       ) : (
-        <div className="mb-4">
-          <span className="text-xs text-gray-500">未出題（R2〜R7範囲）</span>
-        </div>
+        <p className="mb-4 text-xs text-gray-500">
+          行政書士試験 {EXAM_RANGE} では出題実績がありません
+        </p>
       )}
 
-      {/* ── 出題問題番号（民法のみ） ────────────────────────── */}
-      {isCivilCode && questions.length > 0 && (
+      {/* 出題問題番号 */}
+      {questions.length > 0 && (
         <div className="mb-4 flex flex-wrap gap-1">
           {questions.map(q => (
             <span key={q} className="px-2 py-0.5 text-xs rounded-full bg-purple-100 text-purple-700 font-medium">
@@ -248,76 +233,78 @@ export default function ArticlePage() {
         </div>
       )}
 
-      {/* ── 試験傾向注記（民法のみ） ────────────────────────── */}
-      {hasNote && (
-        <div className="mb-5 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800 leading-5">
-          <span className="font-semibold">📌 試験傾向：</span>{lawArticle.note}
+      {/* 試験傾向注記 */}
+      {art.note && (
+        <div className="mb-5 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800 leading-6">
+          <span className="font-semibold">📌 試験傾向：</span>
+          {art.note}
         </div>
       )}
 
-      {/* ── 要件・効果 凡例（民法のみ） ────────────────────── */}
-      {hasSegments && (
-        <div className="mb-5">
-          <button
-            type="button"
-            onClick={() => setShowLegend(v => !v)}
-            className="text-xs text-gray-500 hover:text-gray-700 underline decoration-dotted"
-          >
-            {showLegend ? '▲ 凡例を閉じる' : '▼ ハイライトの見方'}
-          </button>
-          {showLegend && (
-            <div className="mt-2 p-3 rounded-lg border bg-gray-50 text-xs text-gray-700 leading-6 space-y-1">
-              <p>
-                <span className="seg-req px-1 rounded">黄色下線</span>
-                {' '}＝ 要件（条件・前提）
-              </p>
-              <p>
-                <span className="seg-eff px-1 rounded">緑色下線</span>
-                {' '}＝ 効果（義務・権限・法律効果）
-              </p>
-              <p className="text-gray-400 text-[11px]">
-                ※ 自動抽出のため誤検出あり。記述答案では条文どおりの表現が無難です。
-              </p>
-            </div>
-          )}
-        </div>
-      )}
+      {useSegments && <LegendToggle />}
+      {!useSegments && <PhraseJumpList phrases={displayList} />}
 
-      {/* ── 出題箇所ジャンプ（フレーズハイライトのみ） ───── */}
-      {displayPhrases.length > 0 && (
-        <div className="mb-6 p-3 border rounded-lg bg-gray-50">
-          <div className="text-sm font-semibold mb-2 text-gray-700">出題箇所（クリックでジャンプ）</div>
-          <ol className="space-y-1 list-decimal pl-5">
-            {displayPhrases.map((p, i) => (
-              <li key={`${i}-${p}`}>
-                <button
-                  type="button"
-                  className="text-sm text-blue-600 hover:underline text-left"
-                  onClick={() => jumpTo(i)}
-                >
-                  {p}
-                </button>
-              </li>
-            ))}
-          </ol>
-        </div>
-      )}
-
-      {/* ── 条文本文 ────────────────────────────────────────── */}
+      {/* 条文本文 */}
       <div
-        className="text-sm leading-8 text-gray-800"
+        className="text-[15px] leading-8 text-gray-800"
         dangerouslySetInnerHTML={{ __html: articleHtml }}
       />
 
-      {/* ── アフィリエイト（控えめ） ────────────────────────── */}
-      {isCivilCode && count > 0 && (
+      {/* 前後の条文 */}
+      <nav aria-label="前後の条文" className="mt-10 grid grid-cols-2 gap-3">
+        {prevKey && prevArt ? (
+          <Link
+            href={articleHref(lawId, prevKey)}
+            className="min-h-[56px] flex flex-col justify-center px-3 py-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+          >
+            <span className="text-[11px] text-gray-400">← 前の条文</span>
+            <span className="text-sm font-semibold text-gray-800 truncate">{prevArt.title}</span>
+          </Link>
+        ) : (
+          <span />
+        )}
+        {nextKey && nextArt ? (
+          <Link
+            href={articleHref(lawId, nextKey)}
+            className="min-h-[56px] flex flex-col justify-center px-3 py-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors text-right"
+          >
+            <span className="text-[11px] text-gray-400">次の条文 →</span>
+            <span className="text-sm font-semibold text-gray-800 truncate">{nextArt.title}</span>
+          </Link>
+        ) : (
+          <span />
+        )}
+      </nav>
+
+      {/* 一覧・ランキングへ */}
+      <div className="mt-6 flex flex-wrap gap-3">
+        <Link
+          href={`/law/${lawId}`}
+          className="flex-1 min-w-[140px] text-center min-h-[48px] flex items-center justify-center px-4 rounded-lg border border-gray-200 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+        >
+          {meta.name} 条文一覧
+        </Link>
+        {hasRanking && (
+          <Link
+            href={`/ranking/${lawId}`}
+            className="flex-1 min-w-[140px] text-center min-h-[48px] flex items-center justify-center px-4 rounded-lg border border-blue-200 bg-blue-50 text-sm font-semibold text-blue-800 hover:bg-blue-100"
+          >
+            出題ランキング
+          </Link>
+        )}
+      </div>
+
+      {/* アフィリエイト（控えめ・従来どおり民法ページのみ） */}
+      {lawId === 'civil_code' && count > 0 && (
         <div className="mt-10 pt-6 border-t border-gray-100">
-          <p className="text-[11px] text-gray-400 mb-2">📚 テキストで深掘り（サイト運営費に充てています）</p>
+          <p className="text-[11px] text-gray-400 mb-2">
+            📚 テキストで深掘り（Amazonアソシエイトとして適格販売により収入を得ています）
+          </p>
           <a
             href="https://www.amazon.co.jp/s?k=%E8%A1%8C%E6%94%BF%E6%9B%B8%E5%A3%AB+%E6%B0%91%E6%B3%95+%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88&tag=gyoseiroppo-22"
             target="_blank"
             rel="noopener noreferrer sponsored"
-            className="inline-block text-xs text-blue-500 hover:underline"
+            className="inline-block text-xs text-blue-500 hover:underline py-2"
           >
             Amazon で行政書士民法テキストを探す →
           </a>
