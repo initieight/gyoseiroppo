@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { SITE_NAME, SITE_URL, EXAM_RANGE } from '@/lib/laws';
 import Analytics from '@/components/Analytics';
+import SiteFooter from '@/components/SiteFooter';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -56,8 +57,9 @@ export default function RootLayout({
       <head>
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
       </head>
-      <body>
-        {children}
+      <body className="flex min-h-screen flex-col">
+        <div className="flex-1">{children}</div>
+        <SiteFooter />
         <Analytics />
       </body>
     </html>

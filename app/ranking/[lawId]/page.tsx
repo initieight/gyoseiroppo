@@ -12,6 +12,7 @@ import {
   articleHref,
   articleLabel,
 } from '@/lib/laws';
+import KouzaNudge from '@/components/kouza/KouzaNudge';
 
 export const dynamicParams = false;
 
@@ -199,6 +200,8 @@ export default async function RankingPage({ params }: { params: { lawId: string 
           ))}
         </ul>
       </section>
+
+      <KouzaNudge />
     </main>
   );
 }

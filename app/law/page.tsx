@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { LAWS, EXAM_RANGE, getLawData, getHighlightData } from '@/lib/laws';
+import KouzaNudge from '@/components/kouza/KouzaNudge';
 
 export const metadata: Metadata = {
   title: '法律一覧｜行政書士試験の出題条文がわかるWeb六法',
@@ -72,6 +73,8 @@ export default async function LawIndexPage() {
           ))}
         </ul>
       </section>
+
+      <KouzaNudge />
     </main>
   );
 }

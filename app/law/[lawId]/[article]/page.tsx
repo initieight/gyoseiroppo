@@ -17,6 +17,7 @@ import {
   type LawArticle,
 } from '@/lib/laws';
 import { PhraseJumpList, LegendToggle } from './ArticleInteractive';
+import KouzaNudge from '@/components/kouza/KouzaNudge';
 
 export const dynamicParams = false;
 
@@ -310,6 +311,9 @@ export default async function ArticlePage({
           </a>
         </div>
       )}
+
+      {/* 講座比較への導線。条文本文からは離した位置に置く */}
+      <KouzaNudge variant="article" />
     </main>
   );
 }

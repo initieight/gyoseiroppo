@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import InstallPrompt from '@/components/InstallPrompt';
 import { LAWS, EXAM_RANGE, SITE_NAME, getLawData, getHighlightData } from '@/lib/laws';
+import KouzaNudge from '@/components/kouza/KouzaNudge';
+import { DATA_SOURCE_TEXT } from '@/lib/site';
 
 export const metadata: Metadata = {
   alternates: { canonical: '/' },
@@ -74,16 +76,18 @@ export default async function Home() {
           ))}
         </ul>
 
+        <KouzaNudge />
+
         <section className="mt-12 pt-6 border-t border-gray-200">
           <h2 className="text-sm font-semibold text-gray-500 mb-3">このサイトについて</h2>
           <div className="text-xs text-gray-500 leading-6 space-y-2">
+            <p>{DATA_SOURCE_TEXT}</p>
             <p>
-              条文本文は e-Gov 法令検索の法令データをもとにしています。出題実績は行政書士試験の
-              過去問（{EXAM_RANGE}）を独自に分析して根拠条文を割り当てたもので、公式の集計ではありません。
-              集計方法上、取りこぼしや誤りが含まれる場合があります。最終確認は必ず一次情報（e-Gov・試験センター）
-              で行ってください。
+              β版のため、データとページは順次追加・修正しています。
+              <Link href="/about" className="ml-1 text-blue-600 hover:underline">
+                サイトの目的・免責事項について →
+              </Link>
             </p>
-            <p>β版のため、データとページは順次追加・修正しています。</p>
           </div>
         </section>
       </div>

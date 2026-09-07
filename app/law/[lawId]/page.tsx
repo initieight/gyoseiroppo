@@ -13,6 +13,7 @@ import {
 } from '@/lib/laws';
 import { getRank } from '@/components/RankBadge';
 import LawListClient, { type ArticleRow } from './LawListClient';
+import KouzaNudge from '@/components/kouza/KouzaNudge';
 
 export const dynamicParams = false;
 
@@ -118,6 +119,8 @@ export default async function LawListPage({ params }: { params: { lawId: string 
           ))}
         </ul>
       </section>
+
+      <KouzaNudge />
     </main>
   );
 }
