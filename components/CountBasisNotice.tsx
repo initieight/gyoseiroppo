@@ -2,26 +2,18 @@ import { countBasis, EXAM_RANGE } from '@/lib/laws';
 
 /**
  * 集計方法の注記。
- * 民法は1問が論点ブロック内の複数条文に加算されているため、
- * 「出題回数」として読めない。その旨をページ上で明示する。
+ * 民法は選択肢単位で根拠条文を割り当て、問題単位に集約している。
+ * 他の法令とは作り方が違うので、その旨を控えめに明示する。
  */
 export default function CountBasisNotice({ lawId }: { lawId: string }) {
-  if (countBasis(lawId) !== 'topic-block') return null;
+  if (countBasis(lawId) !== 'choice') return null;
 
   return (
-    <div className="mb-5 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-6 text-amber-900">
-      <p className="mb-1 font-bold">この数字の読み方（民法）</p>
-      <p>
-        民法の集計は<strong>論点単位</strong>です。1問につき、その論点に関係する条文のまとまり全体に
-        カウントが入っています（1問あたり平均7条前後）。そのため
-        <strong>「その条文が単独で問われた回数」ではありません</strong>。
-        条文どうしの相対的な重要度を、この数字だけで判断しないでください。
-      </p>
-      <p className="mt-1">
-        問題単位で集計し直す作業を進めています。それまでは
-        「{EXAM_RANGE}の過去問で、この論点まわりがどれくらい問われているか」の目安としてお使いください。
-        他の法令は問題単位の集計なので、この注記は付きません。
-      </p>
-    </div>
+    <p className="mb-5 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-xs leading-6 text-gray-600">
+      <span className="font-semibold text-gray-700">集計方法：</span>
+      民法は、{EXAM_RANGE}の過去問を<strong>選択肢ごと</strong>に読んで根拠条文を割り当て、
+      問題単位で集計しています。1問は最大5肢あるため、1つの問題で複数の条文にカウントが入ります。
+      独自集計であり公式の発表ではありません。誤りを見つけた場合はご容赦ください。
+    </p>
   );
 }

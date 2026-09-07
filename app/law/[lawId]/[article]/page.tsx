@@ -127,8 +127,8 @@ export async function generateMetadata({
   const description = deleted
     ? `${name}${art.title}（削除）`
     : count > 0
-      ? countBasis(lawId) === 'topic-block'
-        ? `${head}${caption}の条文本文。行政書士試験${EXAM_RANGE}の過去問のうち${count}問に関連する条文です（論点単位の集計・${years.join('・')}）。`
+      ? countBasis(lawId) === 'choice'
+        ? `${head}${caption}の条文本文。行政書士試験${EXAM_RANGE}の過去問${count}問で根拠条文になっています（${years.join('・')}）。過去問で問われた箇所をハイライト表示。`
         : `${head}${caption}の条文本文。行政書士試験では${EXAM_RANGE}の過去問で${count}回（${years.join('・')}）出題されています。過去問で問われた箇所をハイライト表示。`
       : `${head}${caption}の条文本文。行政書士試験の過去問（${EXAM_RANGE}）では出題実績が確認できていません。`;
 

@@ -143,20 +143,25 @@ export function articleLabel(key: string): string | null {
  *                  「出題回数」としては読めない。データの作り直しが必要。
  *                  それまでの暫定措置として、表示の文言を分けている。
  */
-export type CountBasis = 'question' | 'topic-block';
+export type CountBasis = 'question' | 'choice';
 
+/**
+ *  'question' : 問題単位で条文を割り当てている（民法以外の10法令）
+ *  'choice'   : 選択肢単位で条文を割り当て、問題単位に集約している（民法）
+ *               1問が最大5肢あるため、1問で複数条文にカウントが入るのは正常。
+ */
 export function countBasis(lawId: string): CountBasis {
-  return lawId === 'civil_code' ? 'topic-block' : 'question';
+  return lawId === 'civil_code' ? 'choice' : 'question';
 }
 
 /** 一覧・ランキングで使う短いラベル */
 export function countLabel(lawId: string, n: number): string {
-  return countBasis(lawId) === 'topic-block' ? `関連${n}問` : `${n}回`;
+  return countBasis(lawId) === 'choice' ? `${n}問` : `${n}回`;
 }
 
 /** 条文ページで使う一文 */
 export function countSentence(lawId: string, n: number): string {
-  return countBasis(lawId) === 'topic-block'
-    ? `${EXAM_RANGE}の過去問のうち${n}問に関連（論点単位の集計）`
+  return countBasis(lawId) === 'choice'
+    ? `行政書士試験 ${EXAM_RANGE} の過去問${n}問で根拠条文になっています`
     : `行政書士試験 ${EXAM_RANGE} で出題${n}回`;
 }

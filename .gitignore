@@ -37,3 +37,6 @@ Thumbs.db
 .env
 .env.local
 .env*.local
+
+# ===== 民法データ再構築の中間ファイル =====
+tools/out/*.json

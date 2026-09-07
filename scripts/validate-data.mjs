@@ -215,8 +215,9 @@ async function main() {
       const total = [...fan.values()].reduce((a, b) => a + b, 0);
       const avg = total / fan.size;
       const max = Math.max(...fan.values());
-      if (avg > 2) {
-        warn(id, `1問あたり平均${avg.toFixed(1)}条に加算されている（最大${max}条／実問題数${fan.size}）。出題回数として表示できない`);
+      // 1問は最大5肢あるので、平均5条までは構造上ありうる
+      if (avg > 5) {
+        warn(id, `1問あたり平均${avg.toFixed(1)}条に加算されている（最大${max}条／実問題数${fan.size}）。論点ブロック単位で加算された疑い`);
       }
     }
 

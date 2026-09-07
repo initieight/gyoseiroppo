@@ -92,7 +92,7 @@ export default async function LawListPage({ params }: { params: { lawId: string 
       <p className="text-sm text-gray-600 leading-6 mb-1">{meta.shortDesc}</p>
       <p className="text-xs text-gray-400 mb-5">
         全{articles.length}条 ／ {EXAM_RANGE} で {askedCount}条に出題実績
-        {countBasis(lawId) === 'topic-block' && '（論点単位の集計）'}
+        {countBasis(lawId) === 'choice' && '（選択肢単位で集計）'}
       </p>
 
       {hasRanking && (

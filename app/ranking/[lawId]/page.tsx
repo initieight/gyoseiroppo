@@ -76,8 +76,8 @@ export async function generateMetadata({
   const title = `${meta.name} 出題ランキング｜行政書士試験の過去問${range}`;
   const description = !rows.length
     ? `行政書士試験の過去問（${range}）における${meta.name}の出題実績。現在集計対象の出題はありません。`
-    : countBasis(params.lawId) === 'topic-block'
-      ? `行政書士試験の過去問（${range}）で${meta.name}から出題実績のある${rows.length}条を、関連する問題数の多い順に表示。集計は論点単位のため、条文単独の出題回数ではありません。条文本文と出題年度も確認できます。`
+    : countBasis(params.lawId) === 'choice'
+      ? `行政書士試験の過去問（${range}）で${meta.name}の根拠条文になった${rows.length}条を、問題数の多い順にランキング表示。最頻出は${top}。選択肢ごとに根拠条文を割り当てて集計しています。`
       : `行政書士試験の過去問（${range}）で${meta.name}から出題された${rows.length}条を、出題回数の多い順にランキング表示。最頻出は${top}。条文本文と出題年度も確認できます。`;
 
   return {
@@ -113,9 +113,9 @@ export default async function RankingPage({ params }: { params: { lawId: string 
       </h1>
       <p className="text-sm text-gray-600 leading-6 mb-6">
         {rows.length > 0 ? (
-          countBasis(lawId) === 'topic-block' ? (
+          countBasis(lawId) === 'choice' ? (
             <>
-              行政書士試験の過去問{range}から抽出した{meta.name}の関連条文を、関連する問題数の多い順に並べています。
+              行政書士試験の過去問{range}から、選択肢ごとに根拠条文を割り当てて集計した{meta.name}のランキングです。
               対象は{rows.length}条。条文名をタップすると本文と出題箇所を確認できます。
             </>
           ) : (
