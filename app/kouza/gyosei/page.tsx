@@ -189,6 +189,27 @@ export default function KouzaGyoseiPage() {
         </div>
       </section>
 
+      {/* 比較表には入れていない講座（規模・設計が違うため別枠） */}
+      <section className="mb-12">
+        <h2 className="mb-3 text-lg font-bold text-gray-800">5. 比較表に入れていない講座</h2>
+        <p className="mb-4 text-[15px] leading-8 text-gray-800">
+          上の比較表は、初学者向けのカリキュラムを一式そろえている大手4社に絞っています。
+          設計思想が違うため同じ表に並べると誤解を招く講座は、別ページで扱っています。
+        </p>
+        <Link
+          href="/kouza/teppan"
+          className="flex min-h-[64px] items-center justify-between gap-3 rounded-xl border border-gray-200 px-4 py-3 transition-colors hover:bg-gray-50"
+        >
+          <span className="min-w-0">
+            <span className="block text-sm font-semibold text-gray-800">行政書士TEPPAN通信講座</span>
+            <span className="mt-0.5 block text-xs leading-5 text-gray-500">
+              市販テキスト準拠・約53時間の講義動画と過去問7回分。買い切り5.5万円〜
+            </span>
+          </span>
+          <span className="shrink-0 text-lg text-gray-400">›</span>
+        </Link>
+      </section>
+
       {/* サイト内導線 */}
       <section className="mt-12 border-t border-gray-100 pt-6">
         <h2 className="mb-3 text-sm font-semibold text-gray-500">条文から学習を進める</h2>

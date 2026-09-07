@@ -20,6 +20,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/about`, lastModified: now, changeFrequency: 'yearly', priority: 0.4 },
     { url: `${SITE_URL}/kouza/gyosei`,  lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${SITE_URL}/kouza/agaroot`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${SITE_URL}/kouza/teppan`,  lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
   ];
 
   for (const law of LAWS) {
