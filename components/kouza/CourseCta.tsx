@@ -17,6 +17,8 @@ export default function CourseCta({
 }) {
   const ready = isLinkReady(providerId);
   const href = ready ? ctaHref(providerId) : officialUrl;
+  // A8.net のインプレッション計測タグ。URLは一字も変更しないこと（A8の規約）
+  const impression = ready ? AFFILIATE_LINKS[providerId].impression : undefined;
 
   return (
     <div className="mt-5">
@@ -29,6 +31,10 @@ export default function CourseCta({
         {name}の公式サイトで最新の価格を見る
         <span aria-hidden>→</span>
       </a>
+      {impression && (
+        /* eslint-disable-next-line @next/next/no-img-element */
+        <img src={impression} width={1} height={1} alt="" style={{ border: 0 }} />
+      )}
       <p className="mt-2 text-[11px] leading-5 text-gray-500">
         価格・キャンペーン・制度の内容は変更されることがあります。申し込み前に必ず公式サイトの表示をご確認ください。
         {ready && <>（このリンクは広告です）</>}

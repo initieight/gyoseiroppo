@@ -36,9 +36,10 @@ export default function TeppanPage() {
 
       <p className="mb-4 text-[15px] leading-8 text-gray-800">
         {TEPPAN.name}（運営：{TEPPAN.company}）は、市販の書籍に準拠した講義動画とオンライン問題演習を
-        セットにした講座です。大手予備校のフルカリキュラムとは規模も設計思想も違うため、
-        当サイトの<Link href="/kouza/gyosei" className="text-blue-600 hover:underline">4社比較</Link>
-        とは分けて、単独のページとして内容を整理しています。
+        セットにした買い切り型の講座です。ここでは{PRICE_AS_OF}時点で公式サイトに記載されている内容を
+        単独で詳しく整理しています。他社と横並びで見たい場合は
+        <Link href="/kouza/gyosei" className="text-blue-600 hover:underline">5社の比較ページ</Link>
+        をご覧ください。
       </p>
 
       <div className="mb-8 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-xs leading-6 text-gray-600">
@@ -50,14 +51,13 @@ export default function TeppanPage() {
       {/* 最初に誤解を解く */}
       <section className="mb-10">
         <h2 className="mb-3 text-lg font-bold text-gray-800">
-          1. 「月額サブスク」ではありません
+          1. 買い切り型です（月額制ではありません）
         </h2>
         <p className="mb-4 text-[15px] leading-8 text-gray-800">
-          先に紛らわしい点をひとつ。TEPPANを紹介している記事の中には「月1,000円台のサブスクで学べる」と
-          書いているものがありますが、それは同じ運営会社が提供している別サービス
-          （オンスク.JPの月額プラン「ウケホーダイ」）の話です。
-          公式サイトには<strong>TEPPAN講座はウケホーダイの対象外</strong>と明記されており、
-          <strong>買い切り型</strong>の講座です。
+          先に間違えやすい点をひとつ。同じ運営会社は月額制のサービス（オンスク.JPの「ウケホーダイ」）も
+          提供していますが、<strong>TEPPAN講座はその対象外</strong>と公式サイトに明記されています。
+          TEPPANは<strong>買い切り型</strong>です。月額料金で紹介している記事を見かけることがありますが、
+          別サービスの料金なので注意してください。
         </p>
         <ul className="mb-4 divide-y divide-gray-100 rounded-lg border border-gray-100">
           {TEPPAN.courses.map(c => (
@@ -121,22 +121,21 @@ export default function TeppanPage() {
       <section className="mb-10">
         <h2 className="mb-3 text-lg font-bold text-gray-800">3. 条文で学ぶ人から見た相性</h2>
         <p className="mb-4 text-[15px] leading-8 text-gray-800">
-          講義の総時間が約53時間というのは、大手予備校の初学者向けカリキュラム（数百時間規模）と比べると
-          かなり短い部類です。網羅性を取りにいく設計ではなく、出題されるところに絞って
-          何度も回すことを前提にした構成といえます。
+          講義の総時間は約53時間で、収録科目は憲法から一般知識まで一通り揃っています。
+          網羅性を積み上げるより、出題されるところに絞って何度も回すことを前提にした構成です。
         </p>
         <p className="mb-4 text-[15px] leading-8 text-gray-800">
-          そのため、条文を1条ずつ潰していく学習の「代わり」にはなりません。
-          噛み合うのは、当サイトのように条文と出題実績は自分で追える状態にあって、
-          全体像の確認と問題演習の量を安く足したい場合です。
+          条文を1条ずつ読み解いていく講義ではないので、条文学習そのものの代わりにはなりません。
+          噛み合うのは、条文と出題実績を自分で追える状態にあって、
+          全体像の確認と問題演習の量を足したい場合です。
           オンラインの過去問7回分と練習問題422問がセットになっているので、
-          条文で理解した内容を問題形式で当てにいく往復には使えます。
+          条文で理解した内容を問題形式で確認する往復に使えます。
         </p>
         <p className="text-[15px] leading-8 text-gray-800">
           逆に、条文を読んでも制度の全体像がつかめない段階であれば、
-          講義量の多いカリキュラム型のほうが向きます。その場合は
-          <Link href="/kouza/gyosei" className="text-blue-600 hover:underline">4社比較のページ</Link>
-          を見てください。
+          講義時間の長いカリキュラム型のほうが向きます。判断に迷う場合は
+          <Link href="/kouza/gyosei" className="text-blue-600 hover:underline">5社の比較ページ</Link>
+          で条件を並べて見てください。
         </p>
       </section>
 
@@ -213,7 +212,7 @@ export default function TeppanPage() {
           href="/kouza/gyosei"
           className="flex min-h-[52px] items-center justify-between gap-3 rounded-xl border border-gray-200 px-4 text-sm font-semibold text-gray-800 hover:bg-gray-50"
         >
-          <span>行政書士通信講座4社の比較を見る</span>
+          <span>行政書士通信講座5社の比較を見る</span>
           <span className="shrink-0 text-lg text-gray-400">›</span>
         </Link>
       </section>

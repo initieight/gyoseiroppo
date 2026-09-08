@@ -24,11 +24,20 @@
 export const PRICE_AS_OF = '2026年9月7日';
 
 /** afb 提携承認後に差し替えるリンク。'#' のままなら準備中表示になる */
-export const AFFILIATE_LINKS: Record<ProviderId, { url: string; label: string }> = {
+export const AFFILIATE_LINKS: Record<
+  ProviderId,
+  { url: string; label: string; impression?: string }
+> = {
   agaroot: { url: '#', label: 'アガルートの行政書士講座（公式）' },
   studying: { url: '#', label: 'スタディングの行政書士講座（公式）' },
   shikakusquare: { url: '#', label: '資格スクエアの行政書士講座（公式）' },
   thg: { url: '#', label: '東京法経学院の行政書士講座（公式）' },
+  // TEPPAN のみ A8.net で提携済み。URLと計測タグは一字も変更しないこと（A8の規約）
+  teppan: {
+    url: 'https://px.a8.net/svt/ejp?a8mat=4BC5IY+6YNJ8A+408S+HV7V6',
+    label: '行政書士TEPPAN通信講座（公式）',
+    impression: 'https://www16.a8.net/0.gif?a8mat=4BC5IY+6YNJ8A+408S+HV7V6',
+  },
 };
 
 /**
@@ -53,7 +62,7 @@ export function ctaHref(providerId: ProviderId): string {
   return appendUtm(url, providerId);
 }
 
-export type ProviderId = 'agaroot' | 'studying' | 'shikakusquare' | 'thg';
+export type ProviderId = 'agaroot' | 'studying' | 'shikakusquare' | 'thg' | 'teppan';
 
 export type Provider = {
   id: ProviderId;
@@ -86,6 +95,50 @@ export type Provider = {
   /** 出典URL */
   sources: { label: string; url: string }[];
 };
+
+// ─────────────────────────────────────────────────────────────
+// TEPPAN（比較表にも他社と同じ条件で載せる）
+// ASP だけ他社と異なり A8.net。提携済みのため実リンクを使用する。
+// ─────────────────────────────────────────────────────────────
+
+/** A8.net の広告リンクと、インプレッション計測用の1x1画像 */
+export const A8_TEPPAN = {
+  url: 'https://px.a8.net/svt/ejp?a8mat=4BC5IY+6YNJ8A+408S+HV7V6',
+  impression: 'https://www16.a8.net/0.gif?a8mat=4BC5IY+6YNJ8A+408S+HV7V6',
+} as const;
+
+export const TEPPAN = {
+  name: '行政書士TEPPAN通信講座',
+  company: '株式会社オンラインスクール（オンスク.JP）',
+  officialUrl: 'https://onsuku.jp/dlc/gyousei',
+  targetYear: '2026年試験対応',
+  lecturer: 'オンスク行政書士研究会',
+  /** 税込・買い切り */
+  courses: [
+    { name: 'テキスト＋過去問集付き（書籍2冊）', price: '60,500円' },
+    { name: 'テキスト付き（書籍1冊）', price: '58,300円' },
+    { name: '書籍なし', price: '55,000円' },
+  ],
+  books: [
+    'TAC出版『スッキリわかるシリーズ 2026年度版 スッキリわかる行政書士』（定価3,080円・税込）',
+    'TAC出版『スッキリ行政書士シリーズ 2026年度版 スッキリとける行政書士 頻出過去問演習』',
+  ],
+  subjects: '憲法・民法・行政法・商法・会社法・基礎法学・一般知識',
+  lectureVolume: '全1回（約53時間）。1講義5分の講義動画',
+  practice: '練習問題422問、解説入りのオンライン過去問7回分。間違えた問題のみの復習機能と、ランダム出題の実力テスト機能あり',
+  mobile: '書籍が手元になくても、講義動画のレジュメと音声ダウンロード教材をスマホで利用できる',
+  trial: '無料登録で体験可能（講義動画5本・約50分、過去問5問＋練習問題15問、学習管理機能）',
+  bonus: '対象試験に合格した人への「合格お祝い金」のキャンペーン実施の記載あり',
+  unverified: [
+    '合格お祝い金の金額と適用条件',
+    '質問サポートの有無（公式サイトでは確認できず）',
+    '合格率・合格者数などの合格実績',
+  ],
+  sources: [
+    { label: '行政書士TEPPAN通信講座（オンスク.JP）', url: 'https://onsuku.jp/dlc/gyousei' },
+    { label: 'TEPPAN講座 トップ', url: 'https://onsuku.jp/teppan' },
+  ],
+} as const;
 
 export const PROVIDERS: Provider[] = [
   {
@@ -260,6 +313,34 @@ export const PROVIDERS: Provider[] = [
       { label: '合格お祝い金制度', url: 'https://www.thg.co.jp/campaign/zengakuhenkin/' },
     ],
   },
+
+  {
+    id: 'teppan',
+    name: '行政書士TEPPAN通信講座',
+    company: '株式会社オンラインスクール（オンスク.JP）',
+    officialUrl: 'https://onsuku.jp/dlc/gyousei',
+    summary:
+      '市販のテキストに準拠した講義動画と、オンラインの問題演習を組み合わせた買い切り型。講義は5万円台から始められ、1講義5分の細切れ構成。',
+    table: {
+      price: `${TEPPAN.courses[2].price}〜${TEPPAN.courses[0].price}（税込・買い切り／${TEPPAN.targetYear}）`,
+      lecture: TEPPAN.lectureVolume + '。書籍が手元になくてもレジュメと音声ダウンロード教材をスマホで利用できる',
+      textbook: 'TAC出版の市販書籍（スッキリわかる行政書士／スッキリとける行政書士 頻出過去問演習）。書籍なしのプランもあり',
+      qa: '公式サイトでは確認できず',
+      bonus: '対象試験に合格した人への「合格お祝い金」のキャンペーン実施の記載あり（金額は公式では確認できず）',
+      trial: '無料登録で体験可能（講義動画5本・約50分、過去問5問＋練習問題15問、学習管理機能）',
+      record: '合格率・合格者数の公表は確認できず',
+    },
+    courses: TEPPAN.courses.map(c => ({ ...c })),
+    fitForArticleStudy:
+      '講義の総時間が約53時間で、収録科目は憲法から一般知識まで一通り揃っています。条文を自分で読み進められる段階にある人が、全体像の確認と演習量を足す用途に噛み合います。オンラインの過去問7回分と練習問題422問が付くので、条文で理解した内容を問題形式で確認する往復がしやすい構成です。逆に、条文を1条ずつ読み解く講義ではないため、条文学習そのものの代わりにはなりません。',
+    cautions: [
+      '買い切り型です。同じ運営会社が月額制のサービスも提供していますが、TEPPAN講座はその対象外と公式に明記されています。月額で始められる講座と誤解しないよう注意してください。',
+      'テキストは市販の書籍です。すでに手元にある場合は「書籍なし」を選べます。価格差はおおむね書籍代に対応しています。',
+      `公式サイトの記載は${TEPPAN.targetYear}です。受験予定の年度と合っているか確認してください。`,
+    ],
+    unverified: [...TEPPAN.unverified],
+    sources: TEPPAN.sources.map(x => ({ ...x })),
+  },
 ];
 
 export function getProvider(id: ProviderId): Provider {
@@ -297,6 +378,13 @@ export const RECOMMENDATIONS: {
       '1動画5分からの構成で、間違えた問題をAIが自動で復習に回します。ペーパーレス版なら3万円台から始められます。',
   },
   {
+    label: '独学に講義だけ足したい',
+    who: '条文と過去問は自分で回せている／費用を抑えたい',
+    providerId: 'teppan',
+    reason:
+      '市販テキストに準拠した約53時間の講義と、練習問題422問・過去問7回分がセットの買い切り型です。全体像の確認と演習量の追加に使えます。',
+  },
+  {
     label: '疑問をその場で潰したい',
     who: '独学で詰まった経験がある／質問を多く使いたい',
     providerId: 'shikakusquare',
@@ -304,47 +392,3 @@ export const RECOMMENDATIONS: {
       '講義画面から送るワンクリック質問が受講期間中100回まで使えます。他の受講生の質問と回答も読めます。',
   },
 ];
-
-// ─────────────────────────────────────────────────────────────
-// TEPPAN（メジャー系4社とは別枠。比較表 PROVIDERS には入れない）
-// ASP は afb ではなく A8.net。提携済みのため実リンクを使用する。
-// ─────────────────────────────────────────────────────────────
-
-/** A8.net の広告リンクと、インプレッション計測用の1x1画像 */
-export const A8_TEPPAN = {
-  url: 'https://px.a8.net/svt/ejp?a8mat=4BC5IY+6YNJ8A+408S+HV7V6',
-  impression: 'https://www16.a8.net/0.gif?a8mat=4BC5IY+6YNJ8A+408S+HV7V6',
-} as const;
-
-export const TEPPAN = {
-  name: '行政書士TEPPAN通信講座',
-  company: '株式会社オンラインスクール（オンスク.JP）',
-  officialUrl: 'https://onsuku.jp/dlc/gyousei',
-  targetYear: '2026年試験対応',
-  lecturer: 'オンスク行政書士研究会',
-  /** 税込・買い切り */
-  courses: [
-    { name: 'テキスト＋過去問集付き（書籍2冊）', price: '60,500円' },
-    { name: 'テキスト付き（書籍1冊）', price: '58,300円' },
-    { name: '書籍なし', price: '55,000円' },
-  ],
-  books: [
-    'TAC出版『スッキリわかるシリーズ 2026年度版 スッキリわかる行政書士』（定価3,080円・税込）',
-    'TAC出版『スッキリ行政書士シリーズ 2026年度版 スッキリとける行政書士 頻出過去問演習』',
-  ],
-  subjects: '憲法・民法・行政法・商法・会社法・基礎法学・一般知識',
-  lectureVolume: '全1回（約53時間）。1講義5分の講義動画',
-  practice: '練習問題422問、解説入りのオンライン過去問7回分。間違えた問題のみの復習機能と、ランダム出題の実力テスト機能あり',
-  mobile: '書籍が手元になくても、講義動画のレジュメと音声ダウンロード教材をスマホで利用できる',
-  trial: '無料登録で体験可能（講義動画5本・約50分、過去問5問＋練習問題15問、学習管理機能）',
-  bonus: '対象試験に合格した人への「合格お祝い金」のキャンペーン実施の記載あり',
-  unverified: [
-    '合格お祝い金の金額と適用条件',
-    '質問サポートの有無（公式サイトでは確認できず）',
-    '合格率・合格者数などの合格実績',
-  ],
-  sources: [
-    { label: '行政書士TEPPAN通信講座（オンスク.JP）', url: 'https://onsuku.jp/dlc/gyousei' },
-    { label: 'TEPPAN講座 トップ', url: 'https://onsuku.jp/teppan' },
-  ],
-} as const;

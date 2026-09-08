@@ -7,15 +7,15 @@ import ComparisonTable from '@/components/kouza/ComparisonTable';
 import CourseCta from '@/components/kouza/CourseCta';
 
 export const metadata: Metadata = {
-  title: { absolute: '行政書士通信講座4社を条文学習との相性で比較' },
+  title: { absolute: '行政書士通信講座5社を条文学習との相性で比較' },
   description:
-    `アガルート・スタディング・資格スクエア・東京法経学院の行政書士通信講座を、価格・講義形態・テキスト・質問サポート・合格特典・合格実績の公表状況で比較。` +
+    `アガルート・スタディング・資格スクエア・東京法経学院・TEPPANの行政書士通信講座を、価格・講義形態・テキスト・質問サポート・合格特典・合格実績の公表状況で比較。` +
     `条文を軸に学ぶ受験生から見てどう違うかという視点でまとめています。${PRICE_AS_OF}時点の公式情報にもとづく記載です。`,
   alternates: { canonical: '/kouza/gyosei' },
   openGraph: {
-    title: '行政書士通信講座を条文学習の相性で比較（4社）',
+    title: '行政書士通信講座を条文学習の相性で比較（5社）',
     description:
-      'アガルート・スタディング・資格スクエア・東京法経学院を、条文を軸に学ぶ受験生の視点で比較しました。',
+      'アガルート・スタディング・資格スクエア・東京法経学院・TEPPANを、条文を軸に学ぶ受験生の視点で比較しました。',
     url: '/kouza/gyosei',
   },
 };
@@ -34,7 +34,7 @@ export default function KouzaGyoseiPage() {
       <AdDisclosure />
 
       <h1 className="mb-3 text-2xl font-bold leading-9 text-gray-800">
-        行政書士通信講座4社を「条文学習との相性」で比較する
+        行政書士通信講座5社を「条文学習との相性」で比較する
       </h1>
 
       <p className="mb-4 text-[15px] leading-8 text-gray-800">
@@ -43,7 +43,7 @@ export default function KouzaGyoseiPage() {
         通信講座を選ぶときも、そのやり方と噛み合うかどうかで見え方が変わります。
       </p>
       <p className="mb-4 text-[15px] leading-8 text-gray-800">
-        このページでは、アガルートアカデミー・スタディング・資格スクエア・東京法経学院の4社について、
+        このページでは、アガルートアカデミー・スタディング・資格スクエア・東京法経学院・行政書士TEPPAN通信講座の5社について、
         価格・講義形態・テキスト・質問サポート・合格特典・合格実績の公表状況を並べたうえで、
         「条文を読みながら進める人にとってどう違うか」を1社ずつ書いています。
         どれが一番いいという書き方はしていません。学習段階と使える時間で答えが変わるためです。
@@ -61,7 +61,7 @@ export default function KouzaGyoseiPage() {
 
       {/* 比較表 */}
       <section className="mb-12">
-        <h2 className="mb-3 text-lg font-bold text-gray-800">1. 4社の比較表</h2>
+        <h2 className="mb-3 text-lg font-bold text-gray-800">1. 5社の比較表</h2>
         <ComparisonTable />
       </section>
 
@@ -69,7 +69,7 @@ export default function KouzaGyoseiPage() {
       <section className="mb-12">
         <h2 className="mb-2 text-lg font-bold text-gray-800">2. 学習段階・条件別の考え方</h2>
         <p className="mb-4 text-sm leading-7 text-gray-700">
-          順位はつけていません。同じ4社でも、いま自分がどの段階にいるかで向き不向きが入れ替わるためです。
+          順位はつけていません。同じ5社でも、いま自分がどの段階にいるかで向き不向きが入れ替わるためです。
         </p>
         <ul className="space-y-3">
           {RECOMMENDATIONS.map(r => {
@@ -182,32 +182,11 @@ export default function KouzaGyoseiPage() {
         <div className="rounded-xl border border-gray-200 bg-white px-4 py-4">
           <p className="mb-2 text-sm font-semibold text-gray-800">先に無料で試せること</p>
           <p className="text-sm leading-7 text-gray-700">
-            4社とも無料体験または資料請求を用意しています。講義の話し方やテキストの見やすさは、
+            5社とも無料体験または資料請求を用意しています。講義の話し方やテキストの見やすさは、
             文章で比較するより実際に見たほうが早く判断できます。
             まずそこで自分に合うかを確かめてから決めるのが確実です。
           </p>
         </div>
-      </section>
-
-      {/* 比較表には入れていない講座（規模・設計が違うため別枠） */}
-      <section className="mb-12">
-        <h2 className="mb-3 text-lg font-bold text-gray-800">5. 比較表に入れていない講座</h2>
-        <p className="mb-4 text-[15px] leading-8 text-gray-800">
-          上の比較表は、初学者向けのカリキュラムを一式そろえている大手4社に絞っています。
-          設計思想が違うため同じ表に並べると誤解を招く講座は、別ページで扱っています。
-        </p>
-        <Link
-          href="/kouza/teppan"
-          className="flex min-h-[64px] items-center justify-between gap-3 rounded-xl border border-gray-200 px-4 py-3 transition-colors hover:bg-gray-50"
-        >
-          <span className="min-w-0">
-            <span className="block text-sm font-semibold text-gray-800">行政書士TEPPAN通信講座</span>
-            <span className="mt-0.5 block text-xs leading-5 text-gray-500">
-              市販テキスト準拠・約53時間の講義動画と過去問7回分。買い切り5.5万円〜
-            </span>
-          </span>
-          <span className="shrink-0 text-lg text-gray-400">›</span>
-        </Link>
       </section>
 
       {/* サイト内導線 */}

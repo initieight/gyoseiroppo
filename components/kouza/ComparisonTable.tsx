@@ -15,9 +15,9 @@ export default function ComparisonTable() {
     <div>
       {/* 横スクロールはこのコンテナ内だけで起きるようにする */}
       <div className="overflow-x-auto rounded-lg border border-gray-200">
-        <table className="w-full min-w-[720px] border-collapse text-left text-xs">
+        <table className="w-full min-w-[900px] border-collapse text-left text-xs">
           <caption className="sr-only">
-            行政書士通信講座4社の比較表（{PRICE_AS_OF}時点）
+            行政書士通信講座5社の比較表（{PRICE_AS_OF}時点）
           </caption>
           <thead>
             <tr className="bg-gray-50">
