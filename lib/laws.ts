@@ -67,30 +67,41 @@ export interface HighlightData {
 // ── サーバ側ローダ（プロセス内キャッシュ付き）────────────────
 const cache = new Map<string, unknown>();
 
-async function readJson<T>(relPath: string, fallback: T): Promise<T> {
+/**
+ * 読み込みに失敗したら例外を投げる。
+ *
+ * 以前は失敗時に空データを返していたが、それだとビルドは通るのに
+ * 中身が空のページやサイトマップが出荷されてしまう。
+ * 落ちてくれたほうが早く気づける。
+ */
+async function readJson<T>(relPath: string): Promise<T> {
   const cached = cache.get(relPath);
   if (cached !== undefined) return cached as T;
+  const full = path.join(process.cwd(), relPath);
+  let buf: string;
   try {
-    const buf = await fs.readFile(path.join(process.cwd(), relPath), 'utf-8');
-    const parsed = JSON.parse(buf) as T;
-    cache.set(relPath, parsed);
-    return parsed;
-  } catch {
-    cache.set(relPath, fallback);
-    return fallback;
+    buf = await fs.readFile(full, 'utf-8');
+  } catch (e) {
+    throw new Error(
+      [
+        `データファイルを読めません: ${relPath}`,
+        'ビルド時ではなく実行時に読もうとしていないか確認してください',
+        '（Vercel のサーバーレス関数には public/ が同梱されません）。',
+        `原因: ${(e as Error).message}`,
+      ].join(' '),
+    );
   }
+  const parsed = JSON.parse(buf) as T;
+  cache.set(relPath, parsed);
+  return parsed;
 }
 
 export function getLawData(lawId: string): Promise<LawData> {
-  return readJson<LawData>(`public/laws/${lawId}.json`, { lawId, articles: {} });
+  return readJson<LawData>(`public/laws/${lawId}.json`);
 }
 
 export function getHighlightData(lawId: string): Promise<HighlightData> {
-  return readJson<HighlightData>(`public/highlights/r2_r7_${lawId}.json`, {
-    lawId,
-    range: ['R2', 'R7'],
-    articles: {},
-  });
+  return readJson<HighlightData>(`public/highlights/r2_r7_${lawId}.json`);
 }
 
 // ── 条番号ユーティリティ ──────────────────────────────────────

@@ -9,7 +9,14 @@ import {
   articleHref,
 } from '@/lib/laws';
 
-export const revalidate = 86400;
+/**
+ * ビルド時に一度だけ生成する。
+ *
+ * revalidate を付けてはいけない。ISR にすると Vercel のサーバーレス関数上で
+ * 再生成され、そこには public/ のファイルが同梱されないため条文データを
+ * 読めず、サイトマップが静かに縮む（実際に 3,343 → 17 になった）。
+ */
+export const dynamic = 'force-static';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
@@ -55,6 +62,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: count > 0 ? 0.8 : 0.5,
       });
     }
+  }
+
+  // 生成に失敗したまま出荷しないための下限チェック。
+  // 条文ページだけで3,000件以上あるはずなので、大きく下回ったらビルドを落とす。
+  if (entries.length < 3000) {
+    throw new Error(
+      `sitemap の生成件数が ${entries.length} 件しかありません。` +
+      '条文データの読み込みに失敗している可能性があります（public/laws, public/highlights）。',
+    );
   }
 
   return entries;
