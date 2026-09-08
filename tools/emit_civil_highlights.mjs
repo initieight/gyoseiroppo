@@ -82,6 +82,9 @@ const main = async () => {
   const law = (await readJson(path.join(HERE, 'public/laws/civil_code.json'))).articles;
   const curPath = path.join(HERE, 'public/highlights/r2_r7_civil_code.json');
   const cur = await readJson(curPath);
+  const ovr = (await readJson(path.join(HERE, 'tools/overrides.json'))).overrides ?? [];
+  const ovrMap = new Map(ovr.map(o => [`${o.qId}|${o.choice}`, o]));
+  const ovrApplied = [];
 
   const branchLog = [];
   const weakLog = [];
@@ -97,6 +100,20 @@ const main = async () => {
     if (!law[r.article]) {
       unresolved.push({ ...r, reason: `第${r.article}条が民法に存在しない` });
       return null;
+    }
+    // 手動の上書きが最優先（独立判定で覆ったもの）
+    const o = ovrMap.get(`${r.qId}|${r.choice}`);
+    if (o) {
+      ovrApplied.push(o);
+      if (o.article === null) {
+        dropped.push({ ...r, reason: `上書きにより割当なし: ${o.reason}` });
+        return null;
+      }
+      if (!law[o.article]) {
+        unresolved.push({ ...r, reason: `上書き先の第${o.article}条が民法に存在しない` });
+        return null;
+      }
+      return { ...r, article: o.article, choiceText: extractChoice(questionText[r.qId], r.choice), overridden: true };
     }
     const ch = extractChoice(questionText[r.qId], r.choice);
     const base = overlap(ch, law[r.article].text);
