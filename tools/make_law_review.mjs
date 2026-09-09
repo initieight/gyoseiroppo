@@ -22,9 +22,17 @@ const DESKTOP = process.env.USERPROFILE + '/Desktop';
 const readJson = async p => JSON.parse(await readFile(p, 'utf-8'));
 
 const SUBJECTS = [
-  { lawId: 'constitution',    name: '憲法',   maxArticle: '103' },
-  { lawId: 'commercial_code', name: '商法',   maxArticle: '850' },
-  { lawId: 'company_act',     name: '会社法', maxArticle: '979' },
+  { lawId: 'constitution',       name: '憲法',           maxArticle: '103' },
+  { lawId: 'commercial_code',    name: '商法',           maxArticle: '850' },
+  { lawId: 'company_act',        name: '会社法',         maxArticle: '979' },
+  // 行政法。行政書士試験で最大の科目
+  { lawId: 'admin_procedure',    name: '行政手続法',     maxArticle: '46' },
+  { lawId: 'admin_appeal',       name: '行政不服審査法', maxArticle: '87' },
+  { lawId: 'admin_litigation',   name: '行政事件訴訟法', maxArticle: '46' },
+  { lawId: 'state_liability',    name: '国家賠償法',     maxArticle: '6' },
+  { lawId: 'admin_enforcement',  name: '行政代執行法',   maxArticle: '6' },
+  { lawId: 'local_autonomy',     name: '地方自治法',     maxArticle: '299' },
+  { lawId: 'national_admin_org', name: '国家行政組織法', maxArticle: '25' },
 ];
 
 const main = async () => {
@@ -79,7 +87,12 @@ const main = async () => {
     ];
 
     for (const [qId, q] of byQ) {
-      md.push(`## ${qId}`, '', `**設問**：${q.stem}`, '');
+      const multi = q.choices.some(c => c.multiLaw);
+      md.push(`## ${qId}`, '');
+      if (multi) {
+        md.push(`> この問題は複数の法令にまたがります。${s.name}が根拠でない肢は \`null\` としてください。`, '');
+      }
+      md.push(`**設問**：${q.stem}`, '');
       for (const c of q.choices) md.push(`- **肢${c.choice}**：${c.text}`);
       md.push('');
     }
