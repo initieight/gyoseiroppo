@@ -11,7 +11,9 @@
  *
  * 検査
  *  A. 条文が実在するか（法令の条数の範囲内か）
- *  B. 選択肢に「第◯条」が明示されていて、それと一致するか  ← 正解が確定する
+ *  B. 選択肢が条文本文をほぼ引き写している場合の正解（機械的に一意に決まる）  ← 対照群
+ *     行政法の肢には条番号がほぼ書かれていないため、民法で使った
+ *     「肢に明示された条番号」は対照群にならなかった（0件）。代わりにこれを使う。
  *  C. 選択肢本文と条文本文の3-gram重なり
  *  D. 同じ問題で同じ条文に偏っていないか（1問で全肢が同じ条文＝雑な割当の疑い）
  *  E. null の比率
@@ -83,6 +85,22 @@ const main = async () => {
     process.exit(1);
   }
 
+  // 各肢について、条文本文と最も一致する条文を求める。
+  // 1位が十分高く（0.55以上）、2位と明確に差がある（0.15以上）ものだけを
+  // 「正解が機械的に決まる肢」として対照群に使う。
+  const best = new Map();
+  const lawEntries = Object.entries(law);
+  for (const r of rows) {
+    const scored = lawEntries
+      .map(([k, a]) => [overlap(r.text, a.text ?? ''), k])
+      .sort((x, y) => y[0] - x[0]);
+    if (scored.length >= 2 && scored[0][0] >= 0.55 && scored[0][0] - scored[1][0] >= 0.15) {
+      best.set(`${r.qId}|${r.choice}`, scored[0][1]);
+    }
+  }
+  console.log(`対照群（条文をほぼ引き写している肢）: ${best.size} / ${rows.length}肢
+`);
+
   const byKey = new Map(ans.map(a => [`${a.qId}|${a.choice}`, a]));
   const out = [];
   const tally = { 確定: 0, 高: 0, 中: 0, 要確認: 0, 割当なし: 0, 未回答: 0 };
@@ -109,13 +127,23 @@ const main = async () => {
 
     const ov = exists ? overlap(r.text, law[art].text) : 0;
 
-    // 選択肢に条番号が明示されていれば、そこで正解が確定する
+    // 対照群: 肢が特定の条文をほぼ引き写していて、2位と明確に差があるもの。
+    // ここは機械的に正解が一意に決まるので、相手の的中率を測る指標になる。
+    const anchor = best.get(`${r.qId}|${r.choice}`);
+    // 肢に条番号が明示されている場合はそちらを優先（民法では有効だった）
     const explicit = [...String(r.text).matchAll(/第([0-9０-９]+)条/g)].map(m => norm(m[1]));
     let level;
     if (explicit.length === 1) {
       controlTotal++;
       if (explicit[0] === art.split('の')[0]) { controlHit++; level = '確定'; }
       else { level = '要確認'; flags.push(`肢に明示された第${explicit[0]}条と割当（第${art}条）が不一致`); }
+    } else if (anchor) {
+      controlTotal++;
+      if (anchor === art) { controlHit++; level = '確定'; }
+      else {
+        level = '要確認';
+        flags.push(`肢がほぼ引き写している第${anchor}条（${law[anchor]?.caption ?? ''}）と割当（第${art}条）が不一致`);
+      }
     } else if (flags.length) {
       level = '要確認';
     } else if (ov >= 0.30) {
