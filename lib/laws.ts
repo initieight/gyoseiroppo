@@ -168,8 +168,11 @@ export type CountBasis = 'question' | 'choice';
  *  'choice'   : 選択肢単位で条文を割り当て、問題単位に集約している（民法）
  *               1問が最大5肢あるため、1問で複数条文にカウントが入るのは正常。
  */
+/** 選択肢単位で根拠条文を割り当てた法令。順次増やしていく */
+const CHOICE_BASED = new Set(['civil_code', 'local_autonomy']);
+
 export function countBasis(lawId: string): CountBasis {
-  return lawId === 'civil_code' ? 'choice' : 'question';
+  return CHOICE_BASED.has(lawId) ? 'choice' : 'question';
 }
 
 /** 一覧・ランキングで使う短いラベル */

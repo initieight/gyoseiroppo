@@ -169,7 +169,16 @@ const main = async () => {
     if (!byQ.has(o.qId)) byQ.set(o.qId, new Set());
     byQ.get(o.qId).add(o.theirs);
   }
-  const suspicious = [...byQ.entries()].filter(([, s]) => s.size === 1).map(([q]) => q);
+  // 3肢以上に条文が付いていて、それが全部同じ条文の場合だけ疑う。
+  // 大半が null の問題（その法令の問題ではない）を拾わないため。
+  const nonNull = new Map();
+  for (const o of out) {
+    if (!o.theirs || o.theirs === 'null') continue;
+    nonNull.set(o.qId, (nonNull.get(o.qId) ?? 0) + 1);
+  }
+  const suspicious = [...byQ.entries()]
+    .filter(([q, s]) => s.size === 1 && (nonNull.get(q) ?? 0) >= 3)
+    .map(([q]) => q);
 
   const head = ['判定', '問題', '肢', '割当', '見出し', '一致度', '相手の自信', '要確認の理由', '相手の理由', '選択肢本文'];
   const csv = '\ufeff' + [head.join(',')]
