@@ -12,6 +12,8 @@ export type ArticleRow = {
   count: number;
   years: string[];
   rank: Rank;
+  /** 他資格でのべ何問問われているか（民法のみ。0なら表示しない） */
+  otherExamTotal: number;
 };
 
 const RANK_META: Record<Rank, { label: string; chipActive: string; chipInactive: string }> = {
@@ -123,6 +125,14 @@ export default function LawListClient({
                   <span className="font-semibold text-gray-800 text-sm">{art.title}</span>
                   {art.caption && (
                     <span className="ml-2 text-xs text-gray-500">{art.caption}</span>
+                  )}
+                  {art.otherExamTotal > 0 && (
+                    <span
+                      className="ml-2 whitespace-nowrap rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-500"
+                      title={`他資格でものべ${art.otherExamTotal}問`}
+                    >
+                      他資格 {art.otherExamTotal}
+                    </span>
                   )}
                 </span>
               </span>

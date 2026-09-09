@@ -13,8 +13,11 @@ import {
   articleLabel,
   countBasis,
   countLabel,
+  getOtherExamData,
+  type OtherExamArticle,
 } from '@/lib/laws';
 import KouzaNudge from '@/components/kouza/KouzaNudge';
+import { OtherExamBadge } from '@/components/OtherExams';
 import CountBasisNotice from '@/components/CountBasisNotice';
 
 export const dynamicParams = false;
@@ -34,10 +37,15 @@ type RankRow = {
   choices: number;
   years: string[];
   questions: string[];
+  other?: OtherExamArticle;
 };
 
 async function buildRows(lawId: string): Promise<{ rows: RankRow[]; range: string }> {
-  const [hl, lawData] = await Promise.all([getHighlightData(lawId), getLawData(lawId)]);
+  const [hl, lawData, other] = await Promise.all([
+    getHighlightData(lawId),
+    getLawData(lawId),
+    getOtherExamData(lawId),
+  ]);
 
   const entries = Object.entries(hl.articles ?? {})
     .filter(([, v]) => (v?.count ?? 0) > 0)
@@ -51,6 +59,7 @@ async function buildRows(lawId: string): Promise<{ rows: RankRow[]; range: strin
       choices: v.choices ?? 0,
       years: v.years ?? [],
       questions: Array.from(new Set(v.questions ?? [])),
+      other: other.articles[key],
     }));
 
   // 出題問題数を主軸に、正解肢の根拠になった数、問われた肢の数で同着を割る。
@@ -172,6 +181,7 @@ export default async function RankingPage({ params }: { params: { lawId: string 
                   <span className="block">
                     <span className="font-semibold text-gray-800 text-sm">{r.title}</span>
                     {r.caption && <span className="ml-2 text-xs text-gray-500">{r.caption}</span>}
+                    <OtherExamBadge data={r.other} />
                   </span>
                   {r.questions.length > 0 && (
                     <span className="flex flex-wrap gap-1 mt-1">

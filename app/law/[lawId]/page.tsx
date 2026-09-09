@@ -12,6 +12,7 @@ import {
   articleHref,
   countBasis,
   countLabel,
+  getOtherExamData,
 } from '@/lib/laws';
 import { getRank } from '@/components/RankBadge';
 import LawListClient, { type ArticleRow } from './LawListClient';
@@ -53,7 +54,11 @@ export default async function LawListPage({ params }: { params: { lawId: string 
   if (!isLawId(lawId)) notFound();
 
   const meta = lawMeta(lawId)!;
-  const [lawData, hl] = await Promise.all([getLawData(lawId), getHighlightData(lawId)]);
+  const [lawData, hl, other] = await Promise.all([
+    getLawData(lawId),
+    getHighlightData(lawId),
+    getOtherExamData(lawId),
+  ]);
 
   const keys = sortedArticleKeys(lawData);
   if (keys.length === 0) notFound();
@@ -69,10 +74,12 @@ export default async function LawListPage({ params }: { params: { lawId: string 
       count,
       years: hl.articles?.[key]?.years ?? [],
       rank: getRank(count),
+      otherExamTotal: other.articles[key]?.total ?? 0,
     };
   });
 
   const askedCount = articles.filter(a => a.count > 0).length;
+  const otherExamCount = articles.filter(a => a.otherExamTotal > 0).length;
   const hasRanking = askedCount > 0;
 
   return (
@@ -93,6 +100,7 @@ export default async function LawListPage({ params }: { params: { lawId: string 
       <p className="text-xs text-gray-400 mb-5">
         全{articles.length}条 ／ {EXAM_RANGE} で {askedCount}条に出題実績
         {countBasis(lawId) === 'choice' && '（選択肢単位で集計）'}
+        {otherExamCount > 0 && ` ／ 他資格でも ${otherExamCount}条が出題`}
       </p>
 
       {hasRanking && (

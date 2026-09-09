@@ -183,3 +183,53 @@ export function countSentence(lawId: string, n: number): string {
     ? `行政書士試験 ${EXAM_RANGE} の過去問${n}問で根拠条文になっています`
     : `行政書士試験 ${EXAM_RANGE} で出題${n}回`;
 }
+
+// ── 他資格試験の出題実績（民法のみ）────────────────────────
+/**
+ * 司法試験・予備試験・司法書士・宅建の出題実績。
+ * 行政書士の実績とは合算せず、別の数字として扱う。重みが違うため。
+ *
+ * ※ 行政書士分は独立判定まで通しているが、この他資格分は通していない。
+ *   表示するときは未検証であることを明示すること。
+ */
+export const OTHER_EXAMS = [
+  { id: 'shiho',  name: '司法試験',   short: '司法' },
+  { id: 'yobi',   name: '予備試験',   short: '予備' },
+  { id: 'shoshi', name: '司法書士',   short: '書士' },
+  { id: 'takken', name: '宅建',       short: '宅建' },
+] as const;
+
+export type OtherExamId = (typeof OTHER_EXAMS)[number]['id'];
+
+export interface OtherExamEntry {
+  count: number;
+  years: string[];
+  questions: string[];
+}
+
+export interface OtherExamArticle {
+  total: number;
+  byExam: Partial<Record<OtherExamId, OtherExamEntry>>;
+}
+
+export interface OtherExamData {
+  lawId: string;
+  exams: string[];
+  articles: Record<string, OtherExamArticle>;
+}
+
+const EMPTY_OTHER: OtherExamData = { lawId: '', exams: [], articles: {} };
+
+/** 他資格データを持つ法令かどうか */
+export function hasOtherExamData(lawId: string): boolean {
+  return lawId === 'civil_code';
+}
+
+export async function getOtherExamData(lawId: string): Promise<OtherExamData> {
+  if (!hasOtherExamData(lawId)) return EMPTY_OTHER;
+  return readJson<OtherExamData>(`public/highlights/other_exams_${lawId}.json`);
+}
+
+export function otherExamName(id: string): string {
+  return OTHER_EXAMS.find(e => e.id === id)?.name ?? id;
+}

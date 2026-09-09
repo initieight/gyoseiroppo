@@ -14,6 +14,7 @@ import {
   articleLabel,
   countBasis,
   countSentence,
+  getOtherExamData,
   SITE_NAME,
   type Segment,
   type LawArticle,
@@ -21,6 +22,7 @@ import {
 import { PhraseJumpList, LegendToggle } from './ArticleInteractive';
 import KouzaNudge from '@/components/kouza/KouzaNudge';
 import CountBasisNotice from '@/components/CountBasisNotice';
+import { OtherExamBlock } from '@/components/OtherExams';
 
 export const dynamicParams = false;
 
@@ -105,9 +107,14 @@ export async function generateMetadata({
   const articleKey = decodeURIComponent(params.article);
   if (!isLawId(lawId)) return { title: 'ページが見つかりません' };
 
-  const [lawData, hl] = await Promise.all([getLawData(lawId), getHighlightData(lawId)]);
+  const [lawData, hl, other] = await Promise.all([
+    getLawData(lawId),
+    getHighlightData(lawId),
+    getOtherExamData(lawId),
+  ]);
   const art = lawData.articles[articleKey];
   if (!art) return { title: 'ページが見つかりません' };
+  const otherTotal = other.articles[articleKey]?.total ?? 0;
 
   const name = lawMeta(lawId)!.name;
   const h = hl.articles?.[articleKey];
@@ -128,9 +135,11 @@ export async function generateMetadata({
     ? `${name}${art.title}（削除）`
     : count > 0
       ? countBasis(lawId) === 'choice'
-        ? `${head}${caption}の条文本文。行政書士試験${EXAM_RANGE}の過去問${count}問で根拠条文になっています（${years.join('・')}）。過去問で問われた箇所をハイライト表示。`
+        ? `${head}${caption}の条文本文。行政書士試験${EXAM_RANGE}の過去問${count}問で根拠条文になっています（${years.join('・')}）。${otherTotal > 0 ? `他資格でものべ${otherTotal}問。` : ''}過去問で問われた箇所をハイライト表示。`
         : `${head}${caption}の条文本文。行政書士試験では${EXAM_RANGE}の過去問で${count}回（${years.join('・')}）出題されています。過去問で問われた箇所をハイライト表示。`
-      : `${head}${caption}の条文本文。行政書士試験の過去問（${EXAM_RANGE}）では出題実績が確認できていません。`;
+      : otherTotal > 0
+        ? `${head}${caption}の条文本文。行政書士試験の過去問（${EXAM_RANGE}）では出題実績が確認できていませんが、司法試験・司法書士などの他資格ではのべ${otherTotal}問で問われています。`
+        : `${head}${caption}の条文本文。行政書士試験の過去問（${EXAM_RANGE}）では出題実績が確認できていません。`;
 
   return {
     title: { absolute: title },
@@ -152,9 +161,14 @@ export default async function ArticlePage({
   const articleKey = decodeURIComponent(params.article);
   if (!isLawId(lawId)) notFound();
 
-  const [lawData, hl] = await Promise.all([getLawData(lawId), getHighlightData(lawId)]);
+  const [lawData, hl, other] = await Promise.all([
+    getLawData(lawId),
+    getHighlightData(lawId),
+    getOtherExamData(lawId),
+  ]);
   const art = lawData.articles[articleKey];
   if (!art) notFound();
+  const otherExam = other.articles[articleKey];
 
   const meta = lawMeta(lawId)!;
   const h = hl.articles?.[articleKey];
@@ -229,6 +243,7 @@ export default async function ArticlePage({
       ) : (
         <p className="mb-4 text-xs text-gray-500">
           行政書士試験 {EXAM_RANGE} では出題実績が確認できていません
+          {otherExam && otherExam.total > 0 && '（他資格では問われています）'}
         </p>
       )}
 
@@ -244,6 +259,8 @@ export default async function ArticlePage({
       )}
 
       {/* 試験傾向注記は事実性が未検証のため撤去（データは civil_code.json に残置） */}
+
+      <OtherExamBlock data={otherExam} />
 
       {count > 0 && <CountBasisNotice lawId={lawId} />}
 
