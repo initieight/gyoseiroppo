@@ -30,6 +30,8 @@ type RankRow = {
   title: string;
   caption?: string;
   count: number;
+  correctCount: number;
+  choices: number;
   years: string[];
   questions: string[];
 };
@@ -45,12 +47,19 @@ async function buildRows(lawId: string): Promise<{ rows: RankRow[]; range: strin
       title: lawData.articles?.[key]?.title ?? `第${key}条`,
       caption: lawData.articles?.[key]?.caption || undefined,
       count: v.count,
+      correctCount: v.correctCount ?? 0,
+      choices: v.choices ?? 0,
       years: v.years ?? [],
       questions: Array.from(new Set(v.questions ?? [])),
     }));
 
+  // 出題問題数を主軸に、正解肢の根拠になった数、問われた肢の数で同着を割る。
+  // 6年分では回数だけだと8割が同着になるため。
   entries.sort((a, b) =>
-    b.count !== a.count ? b.count - a.count : articleSortKey(a.key) - articleSortKey(b.key),
+    b.count - a.count ||
+    b.correctCount - a.correctCount ||
+    b.choices - a.choices ||
+    articleSortKey(a.key) - articleSortKey(b.key),
   );
 
   const range = hl.range?.length
@@ -116,7 +125,9 @@ export default async function RankingPage({ params }: { params: { lawId: string 
           countBasis(lawId) === 'choice' ? (
             <>
               行政書士試験の過去問{range}から、選択肢ごとに根拠条文を割り当てて集計した{meta.name}のランキングです。
-              対象は{rows.length}条。条文名をタップすると本文と出題箇所を確認できます。
+              対象は{rows.length}条。まず<strong>根拠条文になった問題数</strong>で並べ、
+              同数のときは<strong>正解肢の根拠になった数</strong>、次に<strong>問われた選択肢の数</strong>で順位をつけています。
+              条文名をタップすると本文と出題箇所を確認できます。
             </>
           ) : (
             <>
@@ -174,8 +185,16 @@ export default async function RankingPage({ params }: { params: { lawId: string 
                 </span>
 
                 <span className="flex items-center gap-2 shrink-0">
-                  <span className="text-sm font-bold text-gray-700 whitespace-nowrap">
-                    {countLabel(lawId, r.count)}
+                  <span className="flex flex-col items-end">
+                    <span className="text-sm font-bold text-gray-700 whitespace-nowrap">
+                      {countLabel(lawId, r.count)}
+                    </span>
+                    {countBasis(lawId) === 'choice' && r.choices > 0 && (
+                      <span className="text-[10px] leading-4 text-gray-400 whitespace-nowrap">
+                        {r.correctCount > 0 && `正解肢${r.correctCount} / `}
+                        {r.choices}肢
+                      </span>
+                    )}
                   </span>
                   <span className="flex flex-wrap gap-1 justify-end max-w-[104px] sm:max-w-none">
                     {r.years.map(y => (

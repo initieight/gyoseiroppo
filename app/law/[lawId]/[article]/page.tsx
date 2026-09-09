@@ -162,6 +162,7 @@ export default async function ArticlePage({
   const years = h?.years ?? [];
   const phrases = h?.phrases ?? [];
   const questions = Array.from(new Set(h?.questions ?? []));
+  const correctCount = h?.correctCount ?? 0;
 
   const useSegments = hasUsefulSegments(art);
   const { html: phraseHtml, displayList } = useSegments
@@ -213,7 +214,12 @@ export default async function ArticlePage({
           <span className="text-yellow-500 font-bold text-base" title={countSentence(lawId, count)}>
             {starLabel(count)}
           </span>
-          <span className="text-xs text-gray-600">{countSentence(lawId, count)}</span>
+          <span className="text-xs text-gray-600">
+            {countSentence(lawId, count)}
+            {correctCount > 0 && (
+              <span className="text-gray-500">（うち{correctCount}問は正解肢の根拠）</span>
+            )}
+          </span>
           {years.map(y => (
             <span key={y} className="px-1.5 py-0.5 text-xs rounded bg-blue-100 text-blue-700 font-medium">
               {y}

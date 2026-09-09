@@ -52,10 +52,17 @@ export interface LawData {
 }
 
 export interface HighlightArticle {
+  /** この条文が根拠になった問題数 */
   count: number;
   years: string[];
   phrases?: string[];
   questions?: string[];
+  /** 正解肢の根拠になった問題数（民法のみ。選択肢単位で集計しているため出せる） */
+  correctCount?: number;
+  /** 問われた選択肢の数。1問で複数肢に使われることがある（民法のみ） */
+  choices?: number;
+  /** 論点ラベル。事実性が未検証のため現在は表示していない（民法のみ） */
+  issues?: string[];
 }
 
 export interface HighlightData {

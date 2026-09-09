@@ -83,6 +83,9 @@ const main = async () => {
   const curPath = path.join(HERE, 'public/highlights/r2_r7_civil_code.json');
   const cur = await readJson(curPath);
   const ovr = (await readJson(path.join(HERE, 'tools/overrides.json'))).overrides ?? [];
+  // 選択肢ごとに人手でフレーズと論点ラベルが付いたデータ。ハイライトの一次ソースにする
+  const spans = await readJson(process.env.USERPROFILE + '/project/minpo/public/highlights/question_spans.json')
+    .catch(() => ({}));
   const ovrMap = new Map(ovr.map(o => [`${o.qId}|${o.choice}`, o]));
   const ovrApplied = [];
 
@@ -155,7 +158,11 @@ const main = async () => {
   // ── 集計 ──
   const articles = {};
   for (const r of fixed) {
-    const a = (articles[r.article] ??= { count: 0, years: [], phrases: [], questions: [], _qs: new Set() });
+    const a = (articles[r.article] ??= {
+      count: 0, correctCount: 0, choices: 0,
+      years: [], phrases: [], questions: [], issues: [],
+      _qs: new Set(), _correctQs: new Set(),
+    });
     const qLabel = `${r.year}-${r.qNum}`;
     if (!a._qs.has(qLabel)) {
       a._qs.add(qLabel);
@@ -163,9 +170,21 @@ const main = async () => {
       a.count += 1;
       if (!a.years.includes(r.year)) a.years.push(r.year);
     }
-    for (const p of pickPhrases(law[r.article].text, r.choiceText)) {
-      if (!a.phrases.includes(p)) a.phrases.push(p);
+    // 何肢で問われたか（1問で複数肢に使われることがある）
+    a.choices += 1;
+    // 正解肢の根拠になった問題数
+    if (r.correct === true && !a._correctQs.has(qLabel)) {
+      a._correctQs.add(qLabel);
+      a.correctCount += 1;
     }
+
+    // ハイライト: 選択肢単位で付けられたフレーズを優先し、無ければ機械抽出にフォールバック
+    const span = spans?.[r.article]?.[`gyosei-${r.year}-${r.qNum}`];
+    const fromSpan = (span?.phrases ?? []).filter(p => law[r.article].text.includes(p));
+    const picked = fromSpan.length ? fromSpan : pickPhrases(law[r.article].text, r.choiceText);
+    for (const p of picked) if (!a.phrases.includes(p)) a.phrases.push(p);
+    // 論点ラベル（事実性は未検証。データに持つだけで表示はしない）
+    if (span?.issue_label && !a.issues.includes(span.issue_label)) a.issues.push(span.issue_label);
   }
   const YEAR_ORDER = ['R2', 'R3', 'R4', 'R5', 'R6', 'R7'];
   const artNum = k => {
@@ -176,6 +195,7 @@ const main = async () => {
   for (const k of Object.keys(articles).sort((a, b) => artNum(a) - artNum(b))) {
     const a = articles[k];
     delete a._qs;
+    delete a._correctQs;
     a.years.sort((x, y) => YEAR_ORDER.indexOf(x) - YEAR_ORDER.indexOf(y));
     a.questions.sort();
     a.phrases = a.phrases.slice(0, 6);
