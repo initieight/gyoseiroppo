@@ -12,6 +12,11 @@
  *   設問文から法令を判定する仕組み（split_gyosei_choices.mjs）が、
  *   行政法総論や判例中心の問題を拾いすぎることがある。
  *   全肢に条文が付かなかった問題は、その法令の問題ではないと判断して落とす。
+ *
+ * ■ 理由文に書かれた別条文も拾う（--with-referenced）
+ *   準用規定を主たる根拠として答えると、準用先の実体規定が落ちる。
+ *   例: 「38条3項により25条の執行停止が準用される」→ 主=38条 だが 25条も根拠。
+ *   回答者自身が理由文に書いた条番号を拾うだけで、こちらの判断は加えていない。
  */
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -21,6 +26,7 @@ const HERE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.join(HERE, 'tools', 'out');
 const DESKTOP = process.env.USERPROFILE + '/Desktop';
 const WRITE = process.argv.includes('--write');
+const WITH_REF = process.argv.includes('--with-referenced');
 const readJson = async p => JSON.parse(await readFile(p, 'utf-8'));
 
 const NAME_TO_ID = {
@@ -113,6 +119,16 @@ const main = async () => {
       if (art === null) continue;
       if (!law[art]) { unknown.push(`${r.qId} 肢${r.choice} → 第${art}条`); continue; }
 
+      // 理由文に書かれた同一法令の別条文も根拠として拾う
+      const targets = [art];
+      if (WITH_REF) {
+        for (const m of String(a.reason ?? '').matchAll(/(\d+)条(?:の(\d+))?/g)) {
+          const k = m[1] + (m[2] ? `の${m[2]}` : '');
+          if (k !== art && law[k] && !targets.includes(k)) targets.push(k);
+        }
+      }
+
+      for (const art of targets) {
       const e = (articles[art] ??= {
         count: 0, choices: 0, years: [], phrases: [], questions: [], _qs: new Set(),
       });
@@ -125,6 +141,7 @@ const main = async () => {
       }
       for (const p of pickPhrases(law[art].text, r.text)) {
         if (!e.phrases.includes(p)) e.phrases.push(p);
+      }
       }
     }
   }
