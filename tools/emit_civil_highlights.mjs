@@ -83,6 +83,8 @@ const main = async () => {
   const curPath = path.join(HERE, 'public/highlights/r2_r7_civil_code.json');
   const cur = await readJson(curPath);
   const ovr = (await readJson(path.join(HERE, 'tools/overrides.json'))).overrides ?? [];
+  // 本人が逐条分析した結果。該当する問題の割当を丸ごと置き換える（最優先）
+  const auth = (await readJson(path.join(HERE, 'tools/authoritative.json'))).questions ?? {};
   // 選択肢ごとに人手でフレーズと論点ラベルが付いたデータ。ハイライトの一次ソースにする
   const spans = await readJson(process.env.USERPROFILE + '/project/minpo/public/highlights/question_spans.json')
     .catch(() => ({}));
@@ -155,9 +157,38 @@ const main = async () => {
     return { ...r, choiceText: ch, branchFixed: false };
   }).filter(Boolean);
 
+  // ── 本人の逐条分析で該当問題を置き換える ──
+  const authQs = new Set(Object.keys(auth));
+  const beforeCount = fixed.length;
+  const kept = fixed.filter(r => !authQs.has(`${r.year}-${r.qNum}`));
+  const authRows = [];
+  for (const [qLabel, q] of Object.entries(auth)) {
+    const [year, qNum] = qLabel.split('-');
+    // 元データから正解肢の情報だけ引き継ぐ
+    const correctOf = new Map(
+      fixed.filter(r => `${r.year}-${r.qNum}` === qLabel).map(r => [String(r.choice), r.correct]),
+    );
+    for (const [choice, arts] of Object.entries(q.choices)) {
+      for (const a of arts) {
+        if (!law[a]) {
+          unresolved.push({ qId: qLabel, choice, article: a, reason: '逐条分析の条文が民法に存在しない' });
+          continue;
+        }
+        authRows.push({
+          qId: qLabel, year, qNum, choice, article: a,
+          correct: correctOf.get(String(choice)) ?? null,
+          choiceText: extractChoice(questionText[`gyosei-${qLabel}`] ?? questionText[qLabel], choice),
+          authoritative: true,
+        });
+      }
+    }
+  }
+  const merged = [...kept, ...authRows];
+  console.log(`本人の逐条分析で置換: ${authQs.size}問（${beforeCount - kept.length}行 → ${authRows.length}行）`);
+
   // ── 集計 ──
   const articles = {};
-  for (const r of fixed) {
+  for (const r of merged) {
     const a = (articles[r.article] ??= {
       count: 0, correctCount: 0, choices: 0,
       years: [], phrases: [], questions: [], issues: [],
