@@ -60,6 +60,7 @@ async function main() {
     ['ranking/civil_code.html', ['出題ランキング', '第百七十七条']],
     ['about.html', ['免責事項']],
     ['kouza/gyosei.html', ['広告']],
+    ['column/minpo.html', ['条文に始まり、条文に終わる', '時効と登記', '相続と登記', '抽象度が高いほど']],
   ];
   for (const [rel, needles] of samples) {
     const p = path.join(APP, rel);

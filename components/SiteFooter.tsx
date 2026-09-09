@@ -13,6 +13,9 @@ export default function SiteFooter() {
           <Link href="/law" className="text-gray-600 hover:text-gray-900 hover:underline">
             法律一覧
           </Link>
+          <Link href="/column/minpo" className="text-gray-600 hover:text-gray-900 hover:underline">
+            民法の攻略
+          </Link>
           <Link href="/kouza/gyosei" className="text-gray-600 hover:text-gray-900 hover:underline">
             通信講座の比較
           </Link>

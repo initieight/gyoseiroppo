@@ -103,6 +103,21 @@ export default async function LawListPage({ params }: { params: { lawId: string 
         {otherExamCount > 0 && ` ／ 他資格でも ${otherExamCount}条が出題`}
       </p>
 
+      {lawId === 'civil_code' && (
+        <Link
+          href="/column/minpo"
+          className="mb-3 flex min-h-[52px] items-center justify-between gap-3 rounded-xl border border-gray-200 px-4 py-3 text-sm hover:bg-gray-50"
+        >
+          <span className="min-w-0">
+            <span className="block font-semibold text-gray-800">民法は条文から攻略する</span>
+            <span className="mt-0.5 block text-xs text-gray-500">
+              1,167条のうち6年で問われた条文から優先順位をつける
+            </span>
+          </span>
+          <span className="shrink-0 text-lg text-gray-400">›</span>
+        </Link>
+      )}
+
       {hasRanking && (
         <Link
           href={`/ranking/${lawId}`}
