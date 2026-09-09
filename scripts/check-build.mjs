@@ -84,6 +84,30 @@ async function main() {
   if (count < 3300) fail(`条文ページの生成数が ${count}（3,300以上あるはず）`);
   else pass(`条文ページ ${count} 件を生成`);
 
+  // ── 講座の価格情報の鮮度 ──
+  // 「放置型」で運用する以上、価格が古くなったことに気づく仕組みが要る。
+  // 表示している価格が実際と違うと景表法上の問題になる。
+  try {
+    const src = await read(path.join(ROOT, 'lib/kouza.ts'));
+    const m = /PRICE_CHECKED_ON = '(\d{4}-\d{2}-\d{2})'/.exec(src);
+    if (!m) fail('lib/kouza.ts の PRICE_CHECKED_ON が読めない');
+    else {
+      const days = Math.floor((Date.now() - new Date(`${m[1]}T00:00:00Z`).getTime()) / 86400000);
+      if (days > 180) fail(`講座の価格情報が ${days} 日前（${m[1]}）。各社公式で確認して更新すること`);
+      else if (days > 90) console.log(`  ⚠ 講座の価格情報が ${days} 日前（${m[1]}）。そろそろ確認を`);
+      else pass(`講座の価格情報 ${days} 日前（${m[1]}）`);
+    }
+  } catch {
+    fail('lib/kouza.ts を読めない');
+  }
+
+  // ── 診断用サイトマップ ──
+  for (const [f, label] of [['sitemap-asked.xml', '出題あり'], ['sitemap-unasked.xml', '未出題']]) {
+    const p = path.join(APP, `${f}/route.js`);
+    if (!(await exists(p))) fail(`${f} がビルド出力に無い`);
+    else pass(`${f}（${label}）を生成`);
+  }
+
   // ── 結果 ──
   for (const m of ok) console.log(`  ✓ ${m}`);
   if (errors.length) {

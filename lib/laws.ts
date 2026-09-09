@@ -233,3 +233,30 @@ export async function getOtherExamData(lawId: string): Promise<OtherExamData> {
 export function otherExamName(id: string): string {
   return OTHER_EXAMS.find(e => e.id === id)?.name ?? id;
 }
+
+// ── 同じ問題で一緒に問われた条文 ──────────────────────────
+/**
+ * 1つの問題に複数の条文が根拠として割り当てられているとき、
+ * それらを共起として数えたもの。法的な判断はしていない。
+ * 「関連条文」ではなく「一緒に問われた条文」として扱うこと。
+ */
+export interface RelatedArticle {
+  article: string;
+  count: number;
+}
+
+export interface RelatedData {
+  lawId: string;
+  articles: Record<string, RelatedArticle[]>;
+}
+
+const EMPTY_RELATED: RelatedData = { lawId: '', articles: {} };
+
+export function hasRelatedData(lawId: string): boolean {
+  return lawId === 'civil_code';
+}
+
+export async function getRelatedData(lawId: string): Promise<RelatedData> {
+  if (!hasRelatedData(lawId)) return EMPTY_RELATED;
+  return readJson<RelatedData>(`public/highlights/related_${lawId}.json`);
+}

@@ -15,6 +15,7 @@ import {
   countBasis,
   countSentence,
   getOtherExamData,
+  getRelatedData,
   SITE_NAME,
   type Segment,
   type LawArticle,
@@ -23,6 +24,7 @@ import { PhraseJumpList, LegendToggle } from './ArticleInteractive';
 import KouzaNudge from '@/components/kouza/KouzaNudge';
 import CountBasisNotice from '@/components/CountBasisNotice';
 import { OtherExamBlock } from '@/components/OtherExams';
+import RelatedArticles from '@/components/RelatedArticles';
 
 export const dynamicParams = false;
 
@@ -161,14 +163,16 @@ export default async function ArticlePage({
   const articleKey = decodeURIComponent(params.article);
   if (!isLawId(lawId)) notFound();
 
-  const [lawData, hl, other] = await Promise.all([
+  const [lawData, hl, other, related] = await Promise.all([
     getLawData(lawId),
     getHighlightData(lawId),
     getOtherExamData(lawId),
+    getRelatedData(lawId),
   ]);
   const art = lawData.articles[articleKey];
   if (!art) notFound();
   const otherExam = other.articles[articleKey];
+  const relatedItems = related.articles[articleKey];
 
   const meta = lawMeta(lawId)!;
   const h = hl.articles?.[articleKey];
@@ -272,6 +276,8 @@ export default async function ArticlePage({
         className="text-[15px] leading-8 text-gray-800"
         dangerouslySetInnerHTML={{ __html: articleHtml }}
       />
+
+      <RelatedArticles lawId={lawId} items={relatedItems} articles={lawData.articles} />
 
       {/* 前後の条文 */}
       <nav aria-label="前後の条文" className="mt-10 grid grid-cols-2 gap-3">

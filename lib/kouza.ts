@@ -20,8 +20,26 @@
  *   - スタディングの講義画像・問題・ウェブテキストの転載、CM出演タレント名
  */
 
-/** 価格・制度を確認した日付。ページに必ず表示する */
-export const PRICE_AS_OF = '2026年9月7日';
+/**
+ * 価格・制度を確認した日付。ページに必ず表示する。
+ *
+ * ここを更新したら、必ず各社公式サイトで実際に価格を確認し直すこと。
+ * 日付だけ進めると、古い価格を新しい日付で出すことになり景表法上まずい。
+ * 何日経過したかは scripts/check-build.mjs が毎ビルドで警告する。
+ */
+export const PRICE_CHECKED_ON = '2026-09-07';
+
+/** 表示用（和暦まじりの日本語表記） */
+export const PRICE_AS_OF = (() => {
+  const [y, m, d] = PRICE_CHECKED_ON.split('-').map(Number);
+  return `${y}年${m}月${d}日`;
+})();
+
+/** 価格情報が何日前のものか */
+export function priceAgeDays(now: Date = new Date()): number {
+  const t = new Date(`${PRICE_CHECKED_ON}T00:00:00Z`).getTime();
+  return Math.floor((now.getTime() - t) / 86400000);
+}
 
 /** afb 提携承認後に差し替えるリンク。'#' のままなら準備中表示になる */
 export const AFFILIATE_LINKS: Record<
