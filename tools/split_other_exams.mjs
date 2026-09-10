@@ -63,6 +63,15 @@ export const GROUPS = [
 const KANA = 'アイウエオ';
 const MIN_LEN = 150;
 
+/**
+ * 手形法・小切手法の問題は判定にかけない。
+ * 予備試験の商法（問16〜30）の末尾2問はほぼ手形法で、収録している11法令に
+ * 手形法・小切手法はないため、判定しても全肢 null になるだけ。
+ * 「裏書」も手形法の用語だが、株券の裏書と紛れないよう会社法の語がある問題は残す。
+ */
+const SKIP_STEM = /手形|小切手|裏書/;
+const KEEP_STEM = /株式|会社|社債|株主/;
+
 /** 問題文を「設問」と「肢」に分解する */
 function splitChoices(questionText) {
   const t = String(questionText).replace(/\r/g, '');
@@ -110,6 +119,7 @@ const main = async () => {
   for (const g of GROUPS) {
     const rows = [];
     const failed = [];
+    const skipped = [];
     for (const r of g.ranges) {
       for (const e of src.filter(x => x.exam === r.exam)) {
         // 同じ問番号で複数拾っているものがある（注意書きやページ断片）。一番長いものを採る
@@ -125,6 +135,10 @@ const main = async () => {
           const qId = `${r.exam}-${e.year}-Q${q}`;
           const sp = splitChoices(text);
           if (!sp) { failed.push(qId); continue; }
+          if (SKIP_STEM.test(sp.stem) && !KEEP_STEM.test(sp.stem)) {
+            skipped.push(qId);
+            continue;
+          }
           for (const c of sp.choices) {
             rows.push({
               qId, exam: r.exam, examName: r.name, year: e.year, qNum: `Q${q}`,
@@ -147,6 +161,7 @@ const main = async () => {
       console.log(`  ${r.name.padEnd(5)} 問${r.from}〜${r.to}  ${new Set(mine.map(x => x.qId)).size}問 / ${mine.length}肢`);
     }
     console.log(`  計 ${new Set(rows.map(x => x.qId)).size}問 / ${rows.length}肢 → tools/out/other_choices_${g.key}.json`);
+    if (skipped.length) console.log(`  手形法・小切手法なので除外: ${skipped.length}問（${skipped.join(', ')}）`);
     if (failed.length) console.log(`  肢に分解できず: ${failed.join(', ')}`);
   }
 };
