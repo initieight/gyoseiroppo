@@ -22,17 +22,26 @@ const DESKTOP = process.env.USERPROFILE + '/Desktop';
 /** 条文の範囲（範囲外の番号を答えさせないために明示する） */
 const MAX_ARTICLE = { 会社法: '979', 商法: '850', 憲法: '103' };
 
+const YEARS = ['R2', 'R3', 'R4', 'R5', 'R6', 'R7'];
+
+/**
+ * 1本あたりの肢を減らすため、商法・会社法は年度ごとに分ける（1本45〜70肢）。
+ * 憲法は1年3問しかないので3年ずつ（1本45肢）。
+ * 貼る順番は 憲法 → 司法書士 → 予備試験。憲法は1法令が2本で完結する。
+ */
 const BATCHES = [
-  { group: 'shoji', exam: 'shoshi', name: '司法書士', years: ['R2', 'R3'], file: '条文割当_他資格_司法書士_R2R3' },
-  { group: 'shoji', exam: 'shoshi', name: '司法書士', years: ['R4', 'R5'], file: '条文割当_他資格_司法書士_R4R5' },
-  { group: 'shoji', exam: 'shoshi', name: '司法書士', years: ['R6', 'R7'], file: '条文割当_他資格_司法書士_R6R7' },
-  { group: 'shoji', exam: 'yobi', name: '予備試験', years: ['R2', 'R3'], file: '条文割当_他資格_予備試験_R2R3' },
-  { group: 'shoji', exam: 'yobi', name: '予備試験', years: ['R4', 'R5'], file: '条文割当_他資格_予備試験_R4R5' },
-  { group: 'shoji', exam: 'yobi', name: '予備試験', years: ['R6', 'R7'], file: '条文割当_他資格_予備試験_R6R7' },
-  {
-    group: 'kenpo', exam: 'shoshi', name: '司法書士',
-    years: ['R2', 'R3', 'R4', 'R5', 'R6', 'R7'], file: '条文割当_他資格_憲法_司法書士',
-  },
+  ...[['R2', 'R3', 'R4'], ['R5', 'R6', 'R7']].map(years => ({
+    group: 'kenpo', exam: 'shoshi', name: '司法書士', years,
+    file: `条文割当_他資格_憲法_司法書士_${years[0]}${years[2]}`,
+  })),
+  ...YEARS.map(y => ({
+    group: 'shoji', exam: 'shoshi', name: '司法書士', years: [y],
+    file: `条文割当_他資格_司法書士_${y}`,
+  })),
+  ...YEARS.map(y => ({
+    group: 'shoji', exam: 'yobi', name: '予備試験', years: [y],
+    file: `条文割当_他資格_予備試験_${y}`,
+  })),
 ];
 
 const main = async () => {
