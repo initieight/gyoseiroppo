@@ -2,7 +2,7 @@ import { ctaHref, isLinkReady, AFFILIATE_LINKS, type ProviderId } from '@/lib/ko
 
 /**
  * 各社への遷移ボタン。
- * afb の提携が未承認のあいだ（url が '#'）は、リンクではなく公式サイトへの
+ * 提携が未承認のあいだ（url が '#'）は、リンクではなく公式サイトへの
  * 通常リンクを出す。承認後に lib/kouza.ts の AFFILIATE_LINKS を差し替えれば
  * 自動で広告リンクに切り替わる。
  */

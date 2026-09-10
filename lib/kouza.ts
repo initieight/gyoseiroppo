@@ -7,9 +7,10 @@
  *   推測で埋めていない。価格は改定されるため PRICE_AS_OF を必ずページに表示すること。
  *
  * ■ アフィリエイトリンク
- *   afb の提携承認前のため、リンクは AFFILIATE_LINKS のプレースホルダになっている。
- *   承認後に各 url を差し替えるだけでサイト全体に反映される。
- *   アガルートのリンクは提携条件により utm パラメータの付与が必須（appendUtm が付ける）。
+ *   未提携の社は AFFILIATE_LINKS のプレースホルダ（'#'）のまま。承認後に url を
+ *   差し替えるだけでサイト全体に反映される。
+ *   アガルートと TEPPAN は A8.net で提携済み。A8のリンクURLと計測タグは
+ *   一字も変更しないこと（utm などのパラメータ追記も不可）。
  *
  * ■ 書いてはいけないこと
  *   - 報酬率・アフィリエイト報酬額
@@ -41,16 +42,21 @@ export function priceAgeDays(now: Date = new Date()): number {
   return Math.floor((now.getTime() - t) / 86400000);
 }
 
-/** afb 提携承認後に差し替えるリンク。'#' のままなら準備中表示になる */
+/** 提携承認後に差し替えるリンク。'#' のままなら準備中表示になる */
 export const AFFILIATE_LINKS: Record<
   ProviderId,
   { url: string; label: string; impression?: string }
 > = {
-  agaroot: { url: '#', label: 'アガルートの行政書士講座（公式）' },
+  // アガルート: A8.net で提携済み（2026-09-10）。URLと計測タグは一字も変更しないこと（A8の規約）
+  agaroot: {
+    url: 'https://px.a8.net/svt/ejp?a8mat=4BC5IY+6QWWD6+44M0+61JSI',
+    label: 'アガルートの行政書士講座（公式）',
+    impression: 'https://www12.a8.net/0.gif?a8mat=4BC5IY+6QWWD6+44M0+61JSI',
+  },
   studying: { url: '#', label: 'スタディングの行政書士講座（公式）' },
   shikakusquare: { url: '#', label: '資格スクエアの行政書士講座（公式）' },
   thg: { url: '#', label: '東京法経学院の行政書士講座（公式）' },
-  // TEPPAN のみ A8.net で提携済み。URLと計測タグは一字も変更しないこと（A8の規約）
+  // TEPPAN: A8.net で提携済み。URLと計測タグは一字も変更しないこと（A8の規約）
   teppan: {
     url: 'https://px.a8.net/svt/ejp?a8mat=4BC5IY+6YNJ8A+408S+HV7V6',
     label: '行政書士TEPPAN通信講座（公式）',
@@ -59,14 +65,22 @@ export const AFFILIATE_LINKS: Record<
 };
 
 /**
- * アガルートの提携条件で必須の計測パラメータ。
+ * afb 経由でアガルートと提携する場合に必須だった計測パラメータ。
+ * 現在のアガルートのリンクは A8.net 経由で、A8のリンクURLは規約上いっさい改変
+ * できないため付与しない（isA8Url で除外している）。afb に切り替えたときだけ効く。
  * 既に ? を含むURLには & で連結する。
  */
 const AGAROOT_UTM = 'utm_source=afb&utm_medium=aff&utm_campaign=afb-txt';
 
+/** A8.net の計測URLかどうか。A8のリンクは一字も変更してはいけない */
+function isA8Url(url: string): boolean {
+  return url.includes('a8.net');
+}
+
 export function appendUtm(url: string, providerId: ProviderId): string {
   if (providerId !== 'agaroot') return url;
   if (url === '#' || url === '') return url;
+  if (isA8Url(url)) return url;
   return url + (url.includes('?') ? '&' : '?') + AGAROOT_UTM;
 }
 
