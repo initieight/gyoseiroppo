@@ -169,7 +169,7 @@ export type CountBasis = 'question' | 'choice';
  *               1問が最大5肢あるため、1問で複数条文にカウントが入るのは正常。
  */
 /** 選択肢単位で根拠条文を割り当てた法令。順次増やしていく */
-const CHOICE_BASED = new Set(['civil_code', 'local_autonomy', 'admin_litigation']);
+const CHOICE_BASED = new Set(['civil_code', 'local_autonomy', 'admin_litigation', 'admin_procedure']);
 
 export function countBasis(lawId: string): CountBasis {
   return CHOICE_BASED.has(lawId) ? 'choice' : 'question';
