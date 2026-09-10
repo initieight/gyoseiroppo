@@ -172,6 +172,10 @@ export type CountBasis = 'question' | 'choice';
 const CHOICE_BASED = new Set([
   'civil_code', 'local_autonomy', 'admin_litigation', 'admin_procedure',
   'admin_enforcement', 'state_liability', 'admin_appeal', 'constitution', 'company_act',
+  'commercial_code',
+  // 国家行政組織法だけは問題単位のまま。選択肢単位の入力に入る問題がR3-Q10（全肢null）
+  // しかなく、差し替えると空欄補充のR4-Q25由来の第1・3・5条が消えてしまう
+
 ]);
 
 export function countBasis(lawId: string): CountBasis {
