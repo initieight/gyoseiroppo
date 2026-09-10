@@ -171,7 +171,7 @@ export type CountBasis = 'question' | 'choice';
 /** 選択肢単位で根拠条文を割り当てた法令。順次増やしていく */
 const CHOICE_BASED = new Set([
   'civil_code', 'local_autonomy', 'admin_litigation', 'admin_procedure',
-  'admin_enforcement', 'state_liability', 'admin_appeal', 'constitution',
+  'admin_enforcement', 'state_liability', 'admin_appeal', 'constitution', 'company_act',
 ]);
 
 export function countBasis(lawId: string): CountBasis {
