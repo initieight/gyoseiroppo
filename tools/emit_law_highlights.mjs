@@ -59,11 +59,43 @@ function overlap(a, b) {
   return hit / g.size;
 }
 
+/**
+ * 条文本文を文に切る。
+ *
+ * 「。」で切るが、括弧の中の「。」では切らない。条文には
+ * 「（法律の委任に基く命令、規則及び条例を含む。以下同じ。）」のように
+ * 括弧内に句点を含むものが多く、素朴に切ると
+ * 「）により直接に命ぜられ、又は…」のような途中から始まる断片が
+ * ハイライトになってしまう。
+ */
+function splitSentences(text) {
+  const OPEN = '（(「『';
+  const CLOSE = '）)」』';
+  const out = [];
+  let depth = 0;
+  let buf = '';
+  const push = () => {
+    if (buf.trim()) out.push(buf.trim());
+    buf = '';
+  };
+  for (const ch of String(text)) {
+    if (ch === '\n') {
+      push();
+      depth = 0;
+      continue;
+    }
+    if (OPEN.includes(ch)) depth++;
+    else if (CLOSE.includes(ch)) depth = Math.max(0, depth - 1);
+    buf += ch;
+    if (ch === '。' && depth === 0) push();
+  }
+  push();
+  return out;
+}
+
 /** 条文本文のうち、選択肢と最も重なる一文を出題箇所として返す */
 function pickPhrases(articleText, choiceText, max = 3) {
-  return String(articleText)
-    .split(/(?<=。)|\n/)
-    .map(s => s.trim())
+  return splitSentences(articleText)
     .filter(s => s.length >= 15)
     .map(s => ({ s, v: overlap(s, choiceText) }))
     .filter(x => x.v >= 0.12)
