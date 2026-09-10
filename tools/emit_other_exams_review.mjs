@@ -1,15 +1,16 @@
 #!/usr/bin/env node
 /**
- * 他資格（司法書士・予備試験）の条文割当から、商法・会社法の他資格データを組み立てる。
+ * 他資格（司法書士・予備試験）の条文割当から、その法令の他資格データを組み立てる。
  *
- *   node tools/emit_other_exams_shoji.mjs          … 差分の確認だけ
- *   node tools/emit_other_exams_shoji.mjs --write  … 書き込む
+ *   node tools/emit_other_exams_review.mjs          … 差分の確認だけ
+ *   node tools/emit_other_exams_review.mjs --write  … 書き込む
  *
  * 出力は民法の other_exams_civil_code.json と同じ形式にする。
  * 表示側（components/OtherExams.tsx）はそのまま使える。
  *
  *   public/highlights/other_exams_company_act.json
  *   public/highlights/other_exams_commercial_code.json
+ *   public/highlights/other_exams_constitution.json
  *
  * ■ 行政書士の数字とは合算しない
  *   試験ごとに問われ方の重みが違うため、別の数字として持つ（lib/laws.ts の方針）。
@@ -28,7 +29,7 @@ const DESKTOP = process.env.USERPROFILE + '/Desktop';
 const WRITE = process.argv.includes('--write');
 const readJson = async p => JSON.parse(await readFile(p, 'utf-8'));
 
-const LAW_NAME_TO_ID = { 会社法: 'company_act', 商法: 'commercial_code' };
+const LAW_NAME_TO_ID = { 会社法: 'company_act', 商法: 'commercial_code', 憲法: 'constitution' };
 const EXAM_ORDER = ['shiho', 'yobi', 'shoshi', 'takken'];
 const YEAR_ORDER = ['R2', 'R3', 'R4', 'R5', 'R6', 'R7'];
 
@@ -46,7 +47,10 @@ const artNum = k => {
 };
 
 const main = async () => {
-  const { rows } = await readJson(path.join(OUT, 'other_choices_shoji.json'));
+  // tools/out の other_choices_*.json をまとめて読む（商法・会社法／憲法）
+  const groupFiles = (await readdir(OUT)).filter(f => f.startsWith('other_choices_'));
+  const rows = [];
+  for (const f of groupFiles) rows.push(...(await readJson(path.join(OUT, f))).rows);
   const rowByKey = new Map(rows.map(r => [`${r.qId}|${r.choice}`, r]));
 
   const files = (await readdir(DESKTOP)).filter(f => /^条文割当_他資格_.+_回答\.json$/.test(f));

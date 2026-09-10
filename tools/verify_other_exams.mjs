@@ -9,8 +9,10 @@
  * 行政書士の11法令と同じ考え方で検査する（tools/verify_law_review.mjs）。
  * 違うのは、1問の中で会社法・商法・手形法が混ざるため law も検査する点。
  *
+ * 対象は tools/out/other_choices_*.json（商法・会社法／憲法）。
+ *
  * 検査
- *  A. law が 会社法 / 商法 / null のいずれか
+ *  A. law が収録法令（会社法 / 商法 / 憲法）または null のいずれか
  *  B. その法令にその条文が実在するか
  *  C. 肢が条文本文をほぼ引き写している場合の正解（機械的に一意に決まる）  ← 対照群
  *  D. 肢本文と条文本文の3-gram重なり
@@ -27,7 +29,7 @@ const OUT = path.join(HERE, 'tools', 'out');
 const DESKTOP = process.env.USERPROFILE + '/Desktop';
 const readJson = async p => JSON.parse(await readFile(p, 'utf-8'));
 
-const LAW_NAME_TO_ID = { 会社法: 'company_act', 商法: 'commercial_code' };
+const LAW_NAME_TO_ID = { 会社法: 'company_act', 商法: 'commercial_code', 憲法: 'constitution' };
 
 const norm = s => (s ?? '').replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xfee0)).replace(/\s/g, '');
 
@@ -50,7 +52,10 @@ function overlap(a, b) {
 
 const main = async () => {
   const only = process.argv[2];
-  const { rows } = await readJson(path.join(OUT, 'other_choices_shoji.json'));
+  // tools/out の other_choices_*.json をまとめて読む（商法・会社法／憲法）
+  const groupFiles = (await readdir(OUT)).filter(f => f.startsWith('other_choices_'));
+  const rows = [];
+  for (const f of groupFiles) rows.push(...(await readJson(path.join(OUT, f))).rows);
   const laws = {};
   for (const [name, id] of Object.entries(LAW_NAME_TO_ID)) {
     laws[name] = (await readJson(path.join(HERE, `public/laws/${id}.json`))).articles;
@@ -116,15 +121,28 @@ const main = async () => {
     }
 
     const flags = [];
-    if (!laws[lawName]) flags.push(`law "${lawName}" は会社法・商法のどちらでもない`);
+    if (!laws[lawName]) flags.push(`law "${lawName}" は収録している法令の名前ではない`);
     const arts = laws[lawName] ?? {};
     const exists = !!arts[art];
     if (laws[lawName] && !exists) flags.push(`${lawName}に第${art}条が存在しない`);
 
     const ov = exists ? overlap(r.text, arts[art].text) : 0;
     const anchor = best.get(`${r.qId}|${r.choice}`);
+    // 肢に条番号が明示されている場合はそちらを優先して対照群にする。
+    // 司法書士の憲法は「憲法第21条第1項に違反する」のように肢が条番号を書いている
+    const cited = [...new Set(
+      [...String(r.text).matchAll(/第([0-9０-９]+)条(?:の([0-9０-９]+))?/g)]
+        .map(m => norm(m[1]) + (m[2] ? `の${norm(m[2])}` : '')),
+    )];
     let level;
-    if (anchor) {
+    if (cited.length === 1) {
+      controlTotal++;
+      if (cited[0] === art) { controlHit++; level = '確定'; }
+      else {
+        level = '要確認';
+        flags.push(`肢に明示された第${cited[0]}条と割当（${lawName}第${art}条）が不一致`);
+      }
+    } else if (anchor) {
       controlTotal++;
       if (anchor.law === lawName && anchor.art === art) { controlHit++; level = '確定'; }
       else {

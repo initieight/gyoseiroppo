@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 /**
- * 他資格試験（司法書士・予備試験）の商法・会社法の肢に、根拠条文を割り当ててもらう入力を作る。
+ * 他資格試験（司法書士・予備試験）の肢に、根拠条文を割り当ててもらう入力を作る。
  *
  *   node tools/make_other_exam_review.mjs
  *
- * 行政書士の11法令と違い、この範囲は1問の中で会社法・商法・手形法が混ざる。
+ * 行政書士の11法令と違い、1問の中で会社法・商法・手形法が混ざる。
  * そのため条文番号だけでなく、どの法令かも答えてもらう。
  *
  * 出力（1回に貼る量を抑えるため、試験×2年度ずつに分ける）
  *   Desktop/条文割当_他資格_{司法書士|予備試験}_{R2R3|R4R5|R6R7}_入力.md
+ *   Desktop/条文割当_他資格_憲法_司法書士_入力.md
  */
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -18,43 +19,63 @@ const HERE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.join(HERE, 'tools', 'out');
 const DESKTOP = process.env.USERPROFILE + '/Desktop';
 
+/** 条文の範囲（範囲外の番号を答えさせないために明示する） */
+const MAX_ARTICLE = { 会社法: '979', 商法: '850', 憲法: '103' };
+
 const BATCHES = [
-  { exam: 'shoshi', name: '司法書士', years: ['R2', 'R3'], tag: 'R2R3' },
-  { exam: 'shoshi', name: '司法書士', years: ['R4', 'R5'], tag: 'R4R5' },
-  { exam: 'shoshi', name: '司法書士', years: ['R6', 'R7'], tag: 'R6R7' },
-  { exam: 'yobi', name: '予備試験', years: ['R2', 'R3'], tag: 'R2R3' },
-  { exam: 'yobi', name: '予備試験', years: ['R4', 'R5'], tag: 'R4R5' },
-  { exam: 'yobi', name: '予備試験', years: ['R6', 'R7'], tag: 'R6R7' },
+  { group: 'shoji', exam: 'shoshi', name: '司法書士', years: ['R2', 'R3'], file: '条文割当_他資格_司法書士_R2R3' },
+  { group: 'shoji', exam: 'shoshi', name: '司法書士', years: ['R4', 'R5'], file: '条文割当_他資格_司法書士_R4R5' },
+  { group: 'shoji', exam: 'shoshi', name: '司法書士', years: ['R6', 'R7'], file: '条文割当_他資格_司法書士_R6R7' },
+  { group: 'shoji', exam: 'yobi', name: '予備試験', years: ['R2', 'R3'], file: '条文割当_他資格_予備試験_R2R3' },
+  { group: 'shoji', exam: 'yobi', name: '予備試験', years: ['R4', 'R5'], file: '条文割当_他資格_予備試験_R4R5' },
+  { group: 'shoji', exam: 'yobi', name: '予備試験', years: ['R6', 'R7'], file: '条文割当_他資格_予備試験_R6R7' },
+  {
+    group: 'kenpo', exam: 'shoshi', name: '司法書士',
+    years: ['R2', 'R3', 'R4', 'R5', 'R6', 'R7'], file: '条文割当_他資格_憲法_司法書士',
+  },
 ];
 
 const main = async () => {
-  const { rows } = JSON.parse(
-    await readFile(path.join(OUT, 'other_choices_shoji.json'), 'utf-8'),
-  );
+  const cache = {};
+  const load = async key => {
+    if (!cache[key]) {
+      cache[key] = JSON.parse(await readFile(path.join(OUT, `other_choices_${key}.json`), 'utf-8'));
+    }
+    return cache[key];
+  };
 
   for (const b of BATCHES) {
+    const { rows, laws } = await load(b.group);
     const mine = rows.filter(r => r.exam === b.exam && b.years.includes(r.year));
+    if (!mine.length) { console.log(`${b.file}: 該当なし`); continue; }
+
     const byQ = new Map();
     for (const r of mine) {
       if (!byQ.has(r.qId)) byQ.set(r.qId, { stem: r.stem, choices: [] });
       byQ.get(r.qId).choices.push(r);
     }
 
+    const lawChoices = laws.map(l => `**\`${l}\`**`).join(' か ') + ' か **`null`**';
+    const ranges = laws.map(l => `${l}は第1条〜第${MAX_ARTICLE[l]}条`).join('、');
+    const firstQ = [...byQ.keys()][0];
+    const others = laws.includes('憲法')
+      ? '法律（国会法・公職選挙法・裁判所法など）や判例のみが根拠で、憲法の条文が特定できない場合'
+      : '手形法・小切手法・民事訴訟法・民法・刑法など、会社法と商法以外が根拠の場合';
+
     const md = [
-      `# ${b.name} ${b.years.join('・')}｜商法・会社法の根拠条文の割当（${byQ.size}問 / ${mine.length}肢）`,
+      `# ${b.name} ${b.years.join('・')}｜${laws.join('・')}の根拠条文の割当（${byQ.size}問 / ${mine.length}肢）`,
       '',
       '## お願い',
       '',
-      `${b.name}試験（令和${b.years.map(y => y.replace('R', '')).join('・')}年度）の商法・会社法の問題です。`,
+      `${b.name}試験（令和${b.years.map(y => y.replace('R', '')).join('・')}年度）の${laws.join('・')}の問題です。`,
       '**選択肢ごとに、その記述の根拠となる条文を1つ**答えてください。',
       '',
       '### 条件',
       '',
-      '- `law` は **`会社法`** か **`商法`** か **`null`** のいずれか。',
-      '  - 会社法は第1条〜第979条、商法は第1条〜第850条の範囲です。',
-      '  - **手形法・小切手法・民事訴訟法・民法・刑法など、会社法と商法以外が根拠の場合は `law` も `article` も `null`** としてください。',
-      '    （この2法令しか収録していないサイトのデータを作るためです）',
-      '  - 判例のみが根拠で条文が特定できない場合も `null` としてください。',
+      `- \`law\` は ${lawChoices} のいずれか。`,
+      `  - ${ranges}の範囲です。範囲外の番号は答えないでください。`,
+      `  - **${others}は、\`law\` も \`article\` も \`null\`** としてください。`,
+      '    （収録している法令のデータを作るためです）',
       '- 条文は**枝番まで正確に**答えてください（例: `327の2`、`179の3`、`846の2`）。親条文で丸めないでください。',
       '- 複数条文が関わる場合は、**その肢の記述が直接の根拠とする1条**を選んでください。',
       '- 自信の度合いを `high` / `mid` / `low` で付けてください。',
@@ -70,8 +91,8 @@ const main = async () => {
       '',
       '```json',
       '[',
-      `  {"qId": "${[...byQ.keys()][0] ?? 'shoshi-R2-Q27'}", "choice": "ア", "law": "会社法", "article": "52", "confidence": "high", "reason": "52条1項の不足額填補責任"},`,
-      `  {"qId": "${[...byQ.keys()][0] ?? 'shoshi-R2-Q27'}", "choice": "イ", "law": null, "article": null, "confidence": "high", "reason": "手形法が根拠"}`,
+      `  {"qId": "${firstQ}", "choice": "ア", "law": "${laws[0]}", "article": "${laws.includes('憲法') ? '21' : '52'}", "confidence": "high", "reason": "…"},`,
+      `  {"qId": "${firstQ}", "choice": "イ", "law": null, "article": null, "confidence": "high", "reason": "判例のみが根拠"}`,
       ']',
       '```',
       '',
@@ -87,10 +108,10 @@ const main = async () => {
       md.push('');
     }
 
-    const file = path.join(DESKTOP, `条文割当_他資格_${b.name}_${b.tag}_入力.md`);
+    const file = path.join(DESKTOP, `${b.file}_入力.md`);
     await writeFile(file, md.join('\n'), 'utf-8');
     console.log(
-      `${b.name} ${b.tag}  ${String(byQ.size).padStart(2)}問 / ${String(mine.length).padStart(3)}肢  → ${path.basename(file)}`,
+      `${laws.join('・').padEnd(7)} ${b.name} ${b.years.join('')}  ${String(byQ.size).padStart(2)}問 / ${String(mine.length).padStart(3)}肢  → ${path.basename(file)}`,
     );
   }
 };
