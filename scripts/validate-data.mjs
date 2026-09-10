@@ -225,17 +225,17 @@ async function main() {
     if (law.name && law.name !== name) warn(id, `laws の name "${law.name}" がマスタの "${name}" と不一致`);
   }
 
-  // ── 他資格の出題実績（民法のみ）──
-  const other = await readJson('public/highlights/other_exams_civil_code.json');
-  if (other.__error) {
-    warn('civil_code', `他資格データが読めない: ${other.__error}`);
-  } else {
-    const law = await readJson('public/laws/civil_code.json');
+  // ── 他資格の出題実績（ファイルがある法令すべて）──
+  // 民法だけだったが、会社法・商法にも司法書士と予備試験を入れたので法令ごとに回す
+  for (const [id, name] of LAWS) {
+    const other = await readJson(`public/highlights/other_exams_${id}.json`);
+    if (other.__error) continue; // その法令には他資格データが無い
+    const law = await readJson(`public/laws/${id}.json`);
     const arts = law.articles ?? {};
     const oa = other.articles ?? {};
     const dangling = Object.keys(oa).filter(k => !(k in arts));
     if (dangling.length) {
-      err('civil_code', `他資格データが存在しない条文を参照: ${dangling.slice(0, 10).join(', ')}`);
+      err(id, `他資格データが存在しない条文を参照: ${dangling.slice(0, 10).join(', ')}`);
     }
     let badTotal = 0;
     const fan = new Map();
@@ -244,17 +244,17 @@ async function main() {
       if (sum !== v.total) badTotal++;
       for (const [exam, e] of Object.entries(v.byExam ?? {})) {
         if ((e.questions ?? []).length !== e.count) {
-          err('civil_code', `他資格 第${k}条 ${exam}: count=${e.count} だが問題番号が${(e.questions ?? []).length}件`);
+          err(id, `他資格 第${k}条 ${exam}: count=${e.count} だが問題番号が${(e.questions ?? []).length}件`);
         }
         for (const q of e.questions ?? []) fan.set(`${exam}-${q}`, (fan.get(`${exam}-${q}`) ?? 0) + 1);
       }
     }
-    if (badTotal) err('civil_code', `他資格データで total と内訳の合計が合わない条文が ${badTotal} 件`);
+    if (badTotal) err(id, `他資格データで total と内訳の合計が合わない条文が ${badTotal} 件`);
     const avg = fan.size ? [...fan.values()].reduce((a, b) => a + b, 0) / fan.size : 0;
     if (avg > 8) {
-      warn('civil_code', `他資格は1問あたり平均${avg.toFixed(1)}条に加算されている。ブロック展開の疑い`);
+      warn(id, `他資格は1問あたり平均${avg.toFixed(1)}条に加算されている。ブロック展開の疑い`);
     }
-    console.log(`他資格の出題実績: ${Object.keys(oa).length}条 / ${fan.size}問 / 1問あたり平均${avg.toFixed(1)}条`);
+    console.log(`他資格の出題実績（${name}）: ${Object.keys(oa).length}条 / ${fan.size}問 / 1問あたり平均${avg.toFixed(1)}条`);
   }
 
   // ── 結果出力 ──────────────────────────────────────────────

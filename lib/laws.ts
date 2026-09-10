@@ -230,9 +230,15 @@ export interface OtherExamData {
 
 const EMPTY_OTHER: OtherExamData = { lawId: '', exams: [], articles: {} };
 
+/**
+ * 他資格データ（public/highlights/other_exams_{lawId}.json）を持つ法令。
+ * ファイルを置いたらここに追加する。
+ */
+const OTHER_EXAM_LAWS = new Set(['civil_code']);
+
 /** 他資格データを持つ法令かどうか */
 export function hasOtherExamData(lawId: string): boolean {
-  return lawId === 'civil_code';
+  return OTHER_EXAM_LAWS.has(lawId);
 }
 
 export async function getOtherExamData(lawId: string): Promise<OtherExamData> {
