@@ -5,20 +5,29 @@ import { ctaHref, isLinkReady, AFFILIATE_LINKS, type ProviderId } from '@/lib/ko
  * 提携が未承認のあいだ（url が '#'）は、リンクではなく公式サイトへの
  * 通常リンクを出す。承認後に lib/kouza.ts の AFFILIATE_LINKS を差し替えれば
  * 自動で広告リンクに切り替わる。
+ *
+ * useAdCopy を付けると、ボタンの文言に広告主の広告素材のアンカーテキストを使う。
+ * 5社の比較表では使わない（1社だけ宣伝文になると同じ条件の比較にならないため）。
+ * 単体ページでだけ使い、数値が入っている場合は確認できた事実を下に添える。
  */
 export default function CourseCta({
   providerId,
   officialUrl,
   name,
+  useAdCopy = false,
 }: {
   providerId: ProviderId;
   officialUrl: string;
   name: string;
+  useAdCopy?: boolean;
 }) {
   const ready = isLinkReady(providerId);
   const href = ready ? ctaHref(providerId) : officialUrl;
   // A8.net のインプレッション計測タグ。URLは一字も変更しないこと（A8の規約）
   const impression = ready ? AFFILIATE_LINKS[providerId].impression : undefined;
+  // 広告素材のアンカーテキスト。広告主の表記なので一字も変えない
+  const anchor = ready && useAdCopy ? AFFILIATE_LINKS[providerId].anchor : undefined;
+  const anchorNote = anchor ? AFFILIATE_LINKS[providerId].anchorNote : undefined;
 
   return (
     <div className="mt-5">
@@ -28,12 +37,15 @@ export default function CourseCta({
         rel={ready ? 'noopener noreferrer sponsored' : 'noopener noreferrer nofollow'}
         className="flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-blue-700 px-5 text-sm font-bold text-white transition-colors hover:bg-blue-800"
       >
-        {name}の公式サイトで最新の価格を見る
+        {anchor ?? `${name}の公式サイトで最新の価格を見る`}
         <span aria-hidden>→</span>
       </a>
       {impression && (
         /* eslint-disable-next-line @next/next/no-img-element */
         <img src={impression} width={1} height={1} alt="" style={{ border: 0 }} />
+      )}
+      {anchorNote && (
+        <p className="mt-2 text-[11px] leading-5 text-gray-500">{anchorNote}</p>
       )}
       <p className="mt-2 text-[11px] leading-5 text-gray-500">
         価格・キャンペーン・制度の内容は変更されることがあります。申し込み前に必ず公式サイトの表示をご確認ください。

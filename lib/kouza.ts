@@ -45,13 +45,27 @@ export function priceAgeDays(now: Date = new Date()): number {
 /** 提携承認後に差し替えるリンク。'#' のままなら準備中表示になる */
 export const AFFILIATE_LINKS: Record<
   ProviderId,
-  { url: string; label: string; impression?: string }
+  {
+    url: string;
+    label: string;
+    impression?: string;
+    /** 広告素材として配布されているアンカーテキスト（一字も変えない） */
+    anchor?: string;
+    /** anchor に数値が入っている場合に添える、当サイトで確認できた事実 */
+    anchorNote?: string;
+  }
 > = {
   // アガルート: A8.net で提携済み（2026-09-10）。URLと計測タグは一字も変更しないこと（A8の規約）
+  // anchor はA8から配布された広告素材のアンカーテキスト。広告主自身の表記なので文言は変えない
   agaroot: {
     url: 'https://px.a8.net/svt/ejp?a8mat=4BC5IY+6QWWD6+44M0+61JSI',
     label: 'アガルートの行政書士講座（公式）',
     impression: 'https://www12.a8.net/0.gif?a8mat=4BC5IY+6QWWD6+44M0+61JSI',
+    anchor: '合格率がトップクラス（全国平均の4.14倍）の行政書士講座の秘密とは',
+    anchorNote:
+      'リンクの文言は広告主が配布している広告素材の表記です。当サイトが公式サイトで確認できた最新の数値は、' +
+      '令和7年度（2025年度）の受講生合格率52.59%（同年度の全国平均14.54%の3.62倍・同社発表）で、' +
+      '「4.14倍」が何年度の数値かは公式サイトでは確認できませんでした（2026年9月13日時点）。',
   },
   studying: { url: '#', label: 'スタディングの行政書士講座（公式）' },
   shikakusquare: { url: '#', label: '資格スクエアの行政書士講座（公式）' },

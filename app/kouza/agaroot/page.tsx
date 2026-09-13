@@ -210,7 +210,7 @@ export default function AgarootPage() {
         </div>
       </section>
 
-      <CourseCta providerId={P.id} officialUrl={P.officialUrl} name={P.name} />
+      <CourseCta providerId={P.id} officialUrl={P.officialUrl} name={P.name} useAdCopy />
 
       <details className="mt-6">
         <summary className="cursor-pointer py-2 text-xs text-gray-500 hover:text-gray-700">
