@@ -125,23 +125,29 @@ export async function generateMetadata({
   const deleted = isDeletedArticle(art);
 
   // タイトルは検索結果で切れない長さに抑える（全角30字前後を上限とする）
+  // 出題実績のない条文に「出題条文」と付けない（実態と合わないため）
   const head = `${name}${articleLabel(articleKey) ?? art.title}`;
   const caption = art.caption ?? '';
   const len = head.length + caption.length;
   const title =
     caption && len <= 25 ? `${head}${caption}｜${SITE_NAME}`
     : caption && len <= 34 ? `${head}${caption}`
-    : `${head}｜行政書士試験の出題条文`;
+    : count > 0 ? `${head}｜行政書士試験の出題条文`
+    : `${head}｜条文全文`;
 
+  // 説明文は「このページを開かないと得られないもの」から書く。
+  // 条文本文は検索結果のスニペットで読めてしまうため、先頭に置いても
+  // クリックする理由にならない（2026-09-13 のGSC実測でCTR 0.9%）。
+  const otherText = otherTotal > 0 ? `他資格（司法試験・司法書士など）でものべ${otherTotal}問。` : '';
   const description = deleted
     ? `${name}${art.title}（削除）`
     : count > 0
       ? countBasis(lawId) === 'choice'
-        ? `${head}${caption}の条文本文。行政書士試験${EXAM_RANGE}の過去問${count}問で根拠条文になっています（${years.join('・')}）。${otherTotal > 0 ? `他資格でものべ${otherTotal}問。` : ''}過去問で問われた箇所をハイライト表示。`
-        : `${head}${caption}の条文本文。行政書士試験では${EXAM_RANGE}の過去問で${count}回（${years.join('・')}）出題されています。過去問で問われた箇所をハイライト表示。`
+        ? `行政書士試験${EXAM_RANGE}の過去問${count}問（${years.join('・')}）で根拠条文になった${head}。問われた箇所を条文本文にハイライト表示。${otherText}前後の条文・一緒に問われた条文へのリンクつき。`
+        : `行政書士試験${EXAM_RANGE}の過去問で${count}回（${years.join('・')}）出題された${head}。問われた箇所を条文本文にハイライト表示。${otherText}前後の条文へのリンクつき。`
       : otherTotal > 0
-        ? `${head}${caption}の条文本文。行政書士試験の過去問（${EXAM_RANGE}）では出題実績が確認できていませんが、司法試験・司法書士などの他資格ではのべ${otherTotal}問で問われています。`
-        : `${head}${caption}の条文本文。行政書士試験の過去問（${EXAM_RANGE}）では出題実績が確認できていません。`;
+        ? `${head}${caption}の条文全文。他資格（司法試験・司法書士など）ではのべ${otherTotal}問で問われています。行政書士試験${EXAM_RANGE}の過去問では出題実績を確認できていません。`
+        : `${head}${caption}の条文全文と見出し。前後の条文へのリンク、同じ法令の条文一覧つき。行政書士試験${EXAM_RANGE}の過去問では出題実績を確認できていません。`;
 
   return {
     title: { absolute: title },
