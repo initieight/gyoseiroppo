@@ -225,16 +225,17 @@ export interface OtherExamArticle {
 export interface OtherExamData {
   lawId: string;
   exams: string[];
+  range?: string[];
   articles: Record<string, OtherExamArticle>;
 }
 
-const EMPTY_OTHER: OtherExamData = { lawId: '', exams: [], articles: {} };
+const EMPTY_OTHER: OtherExamData = { lawId: '', exams: [], range: [], articles: {} };
 
 /**
  * 他資格データ（public/highlights/other_exams_{lawId}.json）を持つ法令。
  * ファイルを置いたらここに追加する。
  */
-const OTHER_EXAM_LAWS = new Set(['civil_code']);
+const OTHER_EXAM_LAWS = new Set(['civil_code', 'company_act', 'commercial_code']);
 
 /** 他資格データを持つ法令かどうか */
 export function hasOtherExamData(lawId: string): boolean {

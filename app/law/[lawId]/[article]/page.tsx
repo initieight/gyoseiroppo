@@ -270,7 +270,7 @@ export default async function ArticlePage({
 
       {/* 試験傾向注記は事実性が未検証のため撤去（データは civil_code.json に残置） */}
 
-      <OtherExamBlock data={otherExam} />
+      <OtherExamBlock data={otherExam} range={other.range} />
 
       {count > 0 && <CountBasisNotice lawId={lawId} />}
 

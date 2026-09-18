@@ -5,6 +5,7 @@
  *   1. 返ってきた JSON 配列を Desktop/条文割当_他資格_{司法書士|予備試験}_{R2R3}_回答.json として保存
  *   2. node tools/verify_other_exams.mjs            … 置いてある回答すべて
  *      node tools/verify_other_exams.mjs 司法書士    … その試験の分だけ
+ *      node tools/verify_other_exams.mjs --answers-dir=tools/out/company_review
  *
  * 行政書士の11法令と同じ考え方で検査する（tools/verify_law_review.mjs）。
  * 違うのは、1問の中で会社法・商法・手形法が混ざるため law も検査する点。
@@ -26,8 +27,19 @@ import { fileURLToPath } from 'node:url';
 
 const HERE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.join(HERE, 'tools', 'out');
-const DESKTOP = process.env.USERPROFILE + '/Desktop';
 const readJson = async p => JSON.parse(await readFile(p, 'utf-8'));
+
+const option = name => {
+  const prefix = `--${name}=`;
+  const arg = process.argv.find(v => v.startsWith(prefix));
+  return arg ? arg.slice(prefix.length) : null;
+};
+const answersDir = option('answers-dir')
+  ? path.resolve(HERE, option('answers-dir'))
+  : process.env.USERPROFILE + '/Desktop';
+const outputPath = option('output')
+  ? path.resolve(HERE, option('output'))
+  : path.join(answersDir, '条文割当_他資格_突合.csv');
 
 const LAW_NAME_TO_ID = { 会社法: 'company_act', 商法: 'commercial_code', 憲法: 'constitution' };
 
@@ -51,7 +63,7 @@ function overlap(a, b) {
 }
 
 const main = async () => {
-  const only = process.argv[2];
+  const only = process.argv.slice(2).find(v => !v.startsWith('--'));
   // tools/out の other_choices_*.json をまとめて読む（商法・会社法／憲法）
   const groupFiles = (await readdir(OUT)).filter(f => f.startsWith('other_choices_'));
   const rows = [];
@@ -62,7 +74,7 @@ const main = async () => {
   }
 
   // 置いてある回答ファイルを全部読む
-  const files = (await readdir(DESKTOP)).filter(
+  const files = (await readdir(answersDir)).filter(
     f => /^条文割当_他資格_.+_回答\.json$/.test(f) && (!only || f.includes(only)),
   );
   if (!files.length) {
@@ -71,7 +83,7 @@ const main = async () => {
   }
   const ans = [];
   for (const f of files) {
-    const a = await readJson(path.join(DESKTOP, f));
+    const a = await readJson(path.join(answersDir, f));
     console.log(`読み込み: ${f}（${a.length}肢）`);
     ans.push(...a);
   }
@@ -191,7 +203,7 @@ const main = async () => {
             .map(v => `"${String(v).replace(/"/g, '""')}"`).join(','),
         ),
     ).join('\n');
-  await writeFile(path.join(DESKTOP, '条文割当_他資格_突合.csv'), csv, 'utf-8');
+  await writeFile(outputPath, csv, 'utf-8');
 
   const total = target.length;
   console.log(`${total}肢 / ${answeredQ.size}問`);
@@ -207,7 +219,7 @@ const main = async () => {
   if (suspicious.length) {
     console.log(`  条文が1つしか付かなかった問題 ${suspicious.length}件: ${suspicious.slice(0, 8).join(', ')}`);
   }
-  console.log('\n→ Desktop/条文割当_他資格_突合.csv（要確認が上に並びます）');
+  console.log(`\n→ ${outputPath}（要確認が上に並びます）`);
 };
 
 main().catch(e => { console.error(e); process.exit(1); });

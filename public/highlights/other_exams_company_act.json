@@ -1,0 +1,2908 @@
+{
+  "lawId": "company_act",
+  "exams": [
+    "yobi",
+    "shoshi"
+  ],
+  "range": [
+    "R5",
+    "R6",
+    "R7"
+  ],
+  "articles": {
+    "2": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q28"
+          ]
+        }
+      }
+    },
+    "25": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q16"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q27"
+          ]
+        }
+      }
+    },
+    "26": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q16"
+          ]
+        }
+      }
+    },
+    "27": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q16"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q28"
+          ]
+        }
+      }
+    },
+    "28": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 2,
+          "years": [
+            "R5",
+            "R6"
+          ],
+          "questions": [
+            "R5-Q16",
+            "R6-Q16"
+          ]
+        }
+      }
+    },
+    "30": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q16"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q27"
+          ]
+        }
+      }
+    },
+    "31": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q28"
+          ]
+        }
+      }
+    },
+    "32": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q16"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q27"
+          ]
+        }
+      }
+    },
+    "33": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q33"
+          ]
+        }
+      }
+    },
+    "35": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q16"
+          ]
+        }
+      }
+    },
+    "38": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q27"
+          ]
+        }
+      }
+    },
+    "39": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q27"
+          ]
+        }
+      }
+    },
+    "47": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q16"
+          ]
+        }
+      }
+    },
+    "49": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q27"
+          ]
+        }
+      }
+    },
+    "51": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q16"
+          ]
+        }
+      }
+    },
+    "52": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q16"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q27"
+          ]
+        }
+      }
+    },
+    "53": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q27"
+          ]
+        }
+      }
+    },
+    "56": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q16"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q27"
+          ]
+        }
+      }
+    },
+    "63": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q27"
+          ]
+        }
+      }
+    },
+    "64": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q27"
+          ]
+        }
+      }
+    },
+    "65": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q16"
+          ]
+        }
+      }
+    },
+    "105": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q28"
+          ]
+        }
+      }
+    },
+    "108": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q17"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q29"
+          ]
+        }
+      }
+    },
+    "111": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q25"
+          ]
+        }
+      }
+    },
+    "113": {
+      "total": 3,
+      "byExam": {
+        "yobi": {
+          "count": 3,
+          "years": [
+            "R5",
+            "R6",
+            "R7"
+          ],
+          "questions": [
+            "R5-Q18",
+            "R6-Q17",
+            "R7-Q18"
+          ]
+        }
+      }
+    },
+    "115": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q17"
+          ]
+        }
+      }
+    },
+    "120": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q32"
+          ]
+        }
+      }
+    },
+    "121": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q17"
+          ]
+        }
+      }
+    },
+    "122": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q28"
+          ]
+        }
+      }
+    },
+    "123": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 2,
+          "years": [
+            "R5",
+            "R7"
+          ],
+          "questions": [
+            "R5-Q17",
+            "R7-Q19"
+          ]
+        }
+      }
+    },
+    "124": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q17"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q28"
+          ]
+        }
+      }
+    },
+    "125": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q17"
+          ]
+        }
+      }
+    },
+    "126": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q17"
+          ]
+        }
+      }
+    },
+    "128": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q18"
+          ]
+        }
+      }
+    },
+    "134": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q28"
+          ]
+        }
+      }
+    },
+    "138": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q28"
+          ]
+        }
+      }
+    },
+    "143": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q28"
+          ]
+        }
+      }
+    },
+    "171": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q17"
+          ]
+        }
+      }
+    },
+    "180": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q18"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q29"
+          ]
+        }
+      }
+    },
+    "182": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q18"
+          ]
+        }
+      }
+    },
+    "189": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q17"
+          ]
+        }
+      }
+    },
+    "194": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q29"
+          ]
+        }
+      }
+    },
+    "195": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q29"
+          ]
+        }
+      }
+    },
+    "200": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q18"
+          ]
+        }
+      }
+    },
+    "202": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q18"
+          ]
+        }
+      }
+    },
+    "207": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q23"
+          ]
+        }
+      }
+    },
+    "214": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q19"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q29"
+          ]
+        }
+      }
+    },
+    "215": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q18"
+          ]
+        }
+      }
+    },
+    "235": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q29"
+          ]
+        }
+      }
+    },
+    "236": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q19"
+          ]
+        }
+      }
+    },
+    "239": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q29"
+          ]
+        }
+      }
+    },
+    "245": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q19"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q29"
+          ]
+        }
+      }
+    },
+    "254": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q23"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q29"
+          ]
+        }
+      }
+    },
+    "265": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q19"
+          ]
+        }
+      }
+    },
+    "276": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q29"
+          ]
+        }
+      }
+    },
+    "277": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q19"
+          ]
+        }
+      }
+    },
+    "295": {
+      "total": 3,
+      "byExam": {
+        "yobi": {
+          "count": 2,
+          "years": [
+            "R5",
+            "R7"
+          ],
+          "questions": [
+            "R5-Q19",
+            "R7-Q20"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q28"
+          ]
+        }
+      }
+    },
+    "296": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q30"
+          ]
+        }
+      }
+    },
+    "297": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q19"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q30"
+          ]
+        }
+      }
+    },
+    "299": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q20"
+          ]
+        }
+      }
+    },
+    "300": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q20"
+          ]
+        }
+      }
+    },
+    "303": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q30"
+          ]
+        }
+      }
+    },
+    "304": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q20"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q30"
+          ]
+        }
+      }
+    },
+    "305": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q20"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q30"
+          ]
+        }
+      }
+    },
+    "306": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q30"
+          ]
+        }
+      }
+    },
+    "308": {
+      "total": 3,
+      "byExam": {
+        "yobi": {
+          "count": 2,
+          "years": [
+            "R5",
+            "R6"
+          ],
+          "questions": [
+            "R5-Q18",
+            "R6-Q17"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q29"
+          ]
+        }
+      }
+    },
+    "309": {
+      "total": 5,
+      "byExam": {
+        "yobi": {
+          "count": 2,
+          "years": [
+            "R6",
+            "R7"
+          ],
+          "questions": [
+            "R6-Q25",
+            "R7-Q19"
+          ]
+        },
+        "shoshi": {
+          "count": 3,
+          "years": [
+            "R5",
+            "R6",
+            "R7"
+          ],
+          "questions": [
+            "R5-Q28",
+            "R6-Q30",
+            "R7-Q28"
+          ]
+        }
+      }
+    },
+    "310": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q30"
+          ]
+        }
+      }
+    },
+    "313": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q20"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q30"
+          ]
+        }
+      }
+    },
+    "318": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q31"
+          ]
+        }
+      }
+    },
+    "325": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q29"
+          ]
+        }
+      }
+    },
+    "326": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q20"
+          ]
+        }
+      }
+    },
+    "327": {
+      "total": 5,
+      "byExam": {
+        "yobi": {
+          "count": 3,
+          "years": [
+            "R5",
+            "R6",
+            "R7"
+          ],
+          "questions": [
+            "R5-Q22",
+            "R6-Q20",
+            "R7-Q21"
+          ]
+        },
+        "shoshi": {
+          "count": 2,
+          "years": [
+            "R6",
+            "R7"
+          ],
+          "questions": [
+            "R6-Q31",
+            "R7-Q30"
+          ]
+        }
+      }
+    },
+    "328": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q21"
+          ]
+        }
+      }
+    },
+    "329": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q22"
+          ]
+        }
+      }
+    },
+    "331": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q22"
+          ]
+        }
+      }
+    },
+    "335": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q22"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q31"
+          ]
+        }
+      }
+    },
+    "336": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q22"
+          ]
+        }
+      }
+    },
+    "339": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q31"
+          ]
+        }
+      }
+    },
+    "340": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q22"
+          ]
+        }
+      }
+    },
+    "341": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 2,
+          "years": [
+            "R5",
+            "R7"
+          ],
+          "questions": [
+            "R5-Q19",
+            "R7-Q22"
+          ]
+        }
+      }
+    },
+    "342": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q19"
+          ]
+        }
+      }
+    },
+    "348": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q20"
+          ]
+        }
+      }
+    },
+    "349": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q20"
+          ]
+        }
+      }
+    },
+    "356": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q22"
+          ]
+        }
+      }
+    },
+    "361": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q21"
+          ]
+        }
+      }
+    },
+    "362": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q21"
+          ]
+        }
+      }
+    },
+    "363": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q21"
+          ]
+        }
+      }
+    },
+    "369": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 2,
+          "years": [
+            "R6",
+            "R7"
+          ],
+          "questions": [
+            "R6-Q21",
+            "R7-Q19"
+          ]
+        }
+      }
+    },
+    "371": {
+      "total": 2,
+      "byExam": {
+        "shoshi": {
+          "count": 2,
+          "years": [
+            "R5",
+            "R6"
+          ],
+          "questions": [
+            "R5-Q31",
+            "R6-Q28"
+          ]
+        }
+      }
+    },
+    "386": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q25"
+          ]
+        }
+      }
+    },
+    "390": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q30"
+          ]
+        }
+      }
+    },
+    "394": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q31"
+          ]
+        }
+      }
+    },
+    "400": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 2,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q21",
+            "R7-Q22"
+          ]
+        }
+      }
+    },
+    "402": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q22"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q30"
+          ]
+        }
+      }
+    },
+    "404": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q22"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q30"
+          ]
+        }
+      }
+    },
+    "416": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q22"
+          ]
+        }
+      }
+    },
+    "423": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q21"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q32"
+          ]
+        }
+      }
+    },
+    "424": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q32"
+          ]
+        }
+      }
+    },
+    "428": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q32"
+          ]
+        }
+      }
+    },
+    "440": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q33"
+          ]
+        }
+      }
+    },
+    "445": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q23"
+          ]
+        }
+      }
+    },
+    "447": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q31"
+          ]
+        }
+      }
+    },
+    "449": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q31"
+          ]
+        }
+      }
+    },
+    "450": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q31"
+          ]
+        }
+      }
+    },
+    "453": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q23"
+          ]
+        }
+      }
+    },
+    "454": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q31"
+          ]
+        }
+      }
+    },
+    "458": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q23"
+          ]
+        }
+      }
+    },
+    "461": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 2,
+          "years": [
+            "R5",
+            "R6"
+          ],
+          "questions": [
+            "R5-Q18",
+            "R6-Q19"
+          ]
+        }
+      }
+    },
+    "462": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q23"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q32"
+          ]
+        }
+      }
+    },
+    "466": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q25"
+          ]
+        }
+      }
+    },
+    "468": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q25"
+          ]
+        }
+      }
+    },
+    "474": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q34"
+          ]
+        }
+      }
+    },
+    "477": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q32"
+          ]
+        }
+      }
+    },
+    "479": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q32"
+          ]
+        }
+      }
+    },
+    "484": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q32"
+          ]
+        }
+      }
+    },
+    "508": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q32"
+          ]
+        }
+      }
+    },
+    "509": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q32"
+          ]
+        }
+      }
+    },
+    "575": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q33"
+          ]
+        }
+      }
+    },
+    "576": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q24"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q33"
+          ]
+        }
+      }
+    },
+    "580": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q24"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q33"
+          ]
+        }
+      }
+    },
+    "583": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q24"
+          ]
+        }
+      }
+    },
+    "585": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q24"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q33"
+          ]
+        }
+      }
+    },
+    "587": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q24"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q33"
+          ]
+        }
+      }
+    },
+    "598": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q33"
+          ]
+        }
+      }
+    },
+    "605": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q33"
+          ]
+        }
+      }
+    },
+    "608": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q25"
+          ]
+        }
+      }
+    },
+    "615": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q32"
+          ]
+        }
+      }
+    },
+    "618": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q32"
+          ]
+        }
+      }
+    },
+    "622": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q32"
+          ]
+        }
+      }
+    },
+    "625": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q32"
+          ]
+        }
+      }
+    },
+    "627": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q32"
+          ]
+        }
+      }
+    },
+    "638": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q33"
+          ]
+        }
+      }
+    },
+    "639": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q25"
+          ]
+        }
+      }
+    },
+    "676": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q23"
+          ]
+        }
+      }
+    },
+    "680": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q23"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q33"
+          ]
+        }
+      }
+    },
+    "681": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q23"
+          ]
+        }
+      }
+    },
+    "694": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q33"
+          ]
+        }
+      }
+    },
+    "701": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q33"
+          ]
+        }
+      }
+    },
+    "702": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q33"
+          ]
+        }
+      }
+    },
+    "734": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q33"
+          ]
+        }
+      }
+    },
+    "743": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q25"
+          ]
+        }
+      }
+    },
+    "748": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q34"
+          ]
+        }
+      }
+    },
+    "749": {
+      "total": 2,
+      "byExam": {
+        "shoshi": {
+          "count": 2,
+          "years": [
+            "R5",
+            "R6"
+          ],
+          "questions": [
+            "R5-Q34",
+            "R6-Q34"
+          ]
+        }
+      }
+    },
+    "754": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q34"
+          ]
+        }
+      }
+    },
+    "758": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q23"
+          ]
+        }
+      }
+    },
+    "759": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q34"
+          ]
+        }
+      }
+    },
+    "767": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q24"
+          ]
+        }
+      }
+    },
+    "772": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q24"
+          ]
+        }
+      }
+    },
+    "773": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q24"
+          ]
+        }
+      }
+    },
+    "774": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 2,
+          "years": [
+            "R5",
+            "R7"
+          ],
+          "questions": [
+            "R5-Q24",
+            "R7-Q25"
+          ]
+        }
+      }
+    },
+    "785": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q25"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q34"
+          ]
+        }
+      }
+    },
+    "789": {
+      "total": 3,
+      "byExam": {
+        "yobi": {
+          "count": 2,
+          "years": [
+            "R5",
+            "R6"
+          ],
+          "questions": [
+            "R5-Q24",
+            "R6-Q23"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q34"
+          ]
+        }
+      }
+    },
+    "790": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q34"
+          ]
+        }
+      }
+    },
+    "791": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q23"
+          ]
+        }
+      }
+    },
+    "794": {
+      "total": 1,
+      "byExam": {
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q34"
+          ]
+        }
+      }
+    },
+    "797": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q23"
+          ]
+        }
+      }
+    },
+    "799": {
+      "total": 2,
+      "byExam": {
+        "shoshi": {
+          "count": 2,
+          "years": [
+            "R6",
+            "R7"
+          ],
+          "questions": [
+            "R6-Q34",
+            "R7-Q34"
+          ]
+        }
+      }
+    },
+    "810": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q25"
+          ]
+        }
+      }
+    },
+    "828": {
+      "total": 5,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q23"
+          ]
+        },
+        "shoshi": {
+          "count": 4,
+          "years": [
+            "R5",
+            "R7"
+          ],
+          "questions": [
+            "R5-Q34",
+            "R7-Q29",
+            "R7-Q31",
+            "R7-Q34"
+          ]
+        }
+      }
+    },
+    "831": {
+      "total": 3,
+      "byExam": {
+        "yobi": {
+          "count": 2,
+          "years": [
+            "R5",
+            "R6"
+          ],
+          "questions": [
+            "R5-Q25",
+            "R6-Q24"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q30"
+          ]
+        }
+      }
+    },
+    "834": {
+      "total": 3,
+      "byExam": {
+        "yobi": {
+          "count": 2,
+          "years": [
+            "R5",
+            "R6"
+          ],
+          "questions": [
+            "R5-Q25",
+            "R6-Q24"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q34"
+          ]
+        }
+      }
+    },
+    "835": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q25"
+          ]
+        }
+      }
+    },
+    "838": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q26"
+          ]
+        }
+      }
+    },
+    "847": {
+      "total": 3,
+      "byExam": {
+        "yobi": {
+          "count": 2,
+          "years": [
+            "R5",
+            "R7"
+          ],
+          "questions": [
+            "R5-Q25",
+            "R7-Q26"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q27"
+          ]
+        }
+      }
+    },
+    "849": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q26"
+          ]
+        }
+      }
+    },
+    "851": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q26"
+          ]
+        }
+      }
+    },
+    "908": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q27"
+          ]
+        }
+      }
+    },
+    "911": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 2,
+          "years": [
+            "R5",
+            "R6"
+          ],
+          "questions": [
+            "R5-Q26",
+            "R6-Q26"
+          ]
+        }
+      }
+    },
+    "912": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q26"
+          ]
+        }
+      }
+    },
+    "52の2": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q16"
+          ]
+        }
+      }
+    },
+    "182の3": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q18"
+          ]
+        }
+      }
+    },
+    "182の4": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q18"
+          ]
+        }
+      }
+    },
+    "206の2": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q18"
+          ]
+        }
+      }
+    },
+    "325の5": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q20"
+          ]
+        }
+      }
+    },
+    "327の2": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R7"
+          ],
+          "questions": [
+            "R7-Q21"
+          ]
+        }
+      }
+    },
+    "331の2": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q22"
+          ]
+        },
+        "shoshi": {
+          "count": 1,
+          "years": [
+            "R6"
+          ],
+          "questions": [
+            "R6-Q31"
+          ]
+        }
+      }
+    },
+    "348の2": {
+      "total": 1,
+      "byExam": {
+        "yobi": {
+          "count": 1,
+          "years": [
+            "R5"
+          ],
+          "questions": [
+            "R5-Q21"
+          ]
+        }
+      }
+    },
+    "399の13": {
+      "total": 2,
+      "byExam": {
+        "yobi": {
+          "count": 2,
+          "years": [
+            "R5",
+            "R7"
+          ],
+          "questions": [
+            "R5-Q23",
+            "R7-Q21"
+          ]
+        }
+      }
+    }
+  }
+}

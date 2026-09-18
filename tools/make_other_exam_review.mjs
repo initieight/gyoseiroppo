@@ -3,6 +3,7 @@
  * 他資格試験（司法書士・予備試験）の肢に、根拠条文を割り当ててもらう入力を作る。
  *
  *   node tools/make_other_exam_review.mjs
+ *   node tools/make_other_exam_review.mjs --years=R5,R6,R7 --group=shoji --out-dir=tools/out/company_review
  *
  * 行政書士の11法令と違い、1問の中で会社法・商法・手形法が混ざる。
  * そのため条文番号だけでなく、どの法令かも答えてもらう。
@@ -11,18 +12,46 @@
  *   Desktop/条文割当_他資格_{司法書士|予備試験}_{R2R3|R4R5|R6R7}_入力.md
  *   Desktop/条文割当_他資格_憲法_司法書士_入力.md
  */
-import { readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const HERE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.join(HERE, 'tools', 'out');
-const DESKTOP = process.env.USERPROFILE + '/Desktop';
+const DEFAULT_OUTPUT_DIR = process.env.USERPROFILE + '/Desktop';
+
+const option = name => {
+  const prefix = `--${name}=`;
+  const arg = process.argv.find(v => v.startsWith(prefix));
+  return arg ? arg.slice(prefix.length) : null;
+};
+
+const selectedYears = (option('years') ?? 'R2,R3,R4,R5,R6,R7')
+  .split(',')
+  .map(v => v.trim())
+  .filter(Boolean);
+const selectedGroup = option('group');
+const outputDirArg = option('out-dir');
+const outputDir = outputDirArg
+  ? path.resolve(HERE, outputDirArg)
+  : DEFAULT_OUTPUT_DIR;
 
 /** 条文の範囲（範囲外の番号を答えさせないために明示する） */
 const MAX_ARTICLE = { 会社法: '979', 商法: '850', 憲法: '103' };
 
-const YEARS = ['R2', 'R3', 'R4', 'R5', 'R6', 'R7'];
+const VALID_YEARS = new Set(['R2', 'R3', 'R4', 'R5', 'R6', 'R7']);
+for (const year of selectedYears) {
+  if (!VALID_YEARS.has(year)) throw new Error(`未対応の年度です: ${year}`);
+}
+if (selectedGroup && !['kenpo', 'shoji'].includes(selectedGroup)) {
+  throw new Error(`未対応のグループです: ${selectedGroup}`);
+}
+
+const chunks = (xs, size) => {
+  const out = [];
+  for (let i = 0; i < xs.length; i += size) out.push(xs.slice(i, i + size));
+  return out;
+};
 
 /**
  * 1本あたりの肢を減らすため、商法・会社法は年度ごとに分ける（1本45〜70肢）。
@@ -30,21 +59,22 @@ const YEARS = ['R2', 'R3', 'R4', 'R5', 'R6', 'R7'];
  * 貼る順番は 憲法 → 司法書士 → 予備試験。憲法は1法令が2本で完結する。
  */
 const BATCHES = [
-  ...[['R2', 'R3', 'R4'], ['R5', 'R6', 'R7']].map(years => ({
+  ...chunks(selectedYears, 3).map(years => ({
     group: 'kenpo', exam: 'shoshi', name: '司法書士', years,
-    file: `条文割当_他資格_憲法_司法書士_${years[0]}${years[2]}`,
+    file: `条文割当_他資格_憲法_司法書士_${years[0]}${years.at(-1)}`,
   })),
-  ...YEARS.map(y => ({
+  ...selectedYears.map(y => ({
     group: 'shoji', exam: 'shoshi', name: '司法書士', years: [y],
     file: `条文割当_他資格_司法書士_${y}`,
   })),
-  ...YEARS.map(y => ({
+  ...selectedYears.map(y => ({
     group: 'shoji', exam: 'yobi', name: '予備試験', years: [y],
     file: `条文割当_他資格_予備試験_${y}`,
   })),
-];
+].filter(b => !selectedGroup || b.group === selectedGroup);
 
 const main = async () => {
+  await mkdir(outputDir, { recursive: true });
   const cache = {};
   const load = async key => {
     if (!cache[key]) {
@@ -95,6 +125,7 @@ const main = async () => {
       '既存の割当はありません。白紙から判断してください。',
       '分からないものを埋めるより、`low` や `null` を正直に付けてもらう方が有用です。',
       'こちらで条文の実在・本文との語彙一致を機械的に検証します。',
+      '**この回答は補助判定です。公開前に機械監査CSVと人間確認を通します。**',
       '',
       '### 出力形式',
       '',
@@ -117,12 +148,13 @@ const main = async () => {
       md.push('');
     }
 
-    const file = path.join(DESKTOP, `${b.file}_入力.md`);
+    const file = path.join(outputDir, `${b.file}_入力.md`);
     await writeFile(file, md.join('\n'), 'utf-8');
     console.log(
       `${laws.join('・').padEnd(7)} ${b.name} ${b.years.join('')}  ${String(byQ.size).padStart(2)}問 / ${String(mine.length).padStart(3)}肢  → ${path.basename(file)}`,
     );
   }
+  console.log(`\n出力先: ${outputDir}`);
 };
 
 main().catch(e => { console.error(e); process.exit(1); });

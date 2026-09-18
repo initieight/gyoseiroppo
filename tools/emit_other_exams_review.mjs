@@ -4,6 +4,7 @@
  *
  *   node tools/emit_other_exams_review.mjs          … 差分の確認だけ
  *   node tools/emit_other_exams_review.mjs --write  … 書き込む
+ *   node tools/emit_other_exams_review.mjs --years=R5,R6,R7 --answers-dir=tools/out/company_review
  *
  * 出力は民法の other_exams_civil_code.json と同じ形式にする。
  * 表示側（components/OtherExams.tsx）はそのまま使える。
@@ -25,9 +26,22 @@ import { fileURLToPath } from 'node:url';
 
 const HERE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.join(HERE, 'tools', 'out');
-const DESKTOP = process.env.USERPROFILE + '/Desktop';
 const WRITE = process.argv.includes('--write');
 const readJson = async p => JSON.parse(await readFile(p, 'utf-8'));
+
+const option = name => {
+  const prefix = `--${name}=`;
+  const arg = process.argv.find(v => v.startsWith(prefix));
+  return arg ? arg.slice(prefix.length) : null;
+};
+const includedYears = (option('years') ?? 'R2,R3,R4,R5,R6,R7')
+  .split(',')
+  .map(v => v.trim())
+  .filter(Boolean);
+const includedYearSet = new Set(includedYears);
+const answersDir = option('answers-dir')
+  ? path.resolve(HERE, option('answers-dir'))
+  : process.env.USERPROFILE + '/Desktop';
 
 const LAW_NAME_TO_ID = { 会社法: 'company_act', 商法: 'commercial_code', 憲法: 'constitution' };
 const EXAM_ORDER = ['shiho', 'yobi', 'shoshi', 'takken'];
@@ -53,14 +67,14 @@ const main = async () => {
   for (const f of groupFiles) rows.push(...(await readJson(path.join(OUT, f))).rows);
   const rowByKey = new Map(rows.map(r => [`${r.qId}|${r.choice}`, r]));
 
-  const files = (await readdir(DESKTOP)).filter(f => /^条文割当_他資格_.+_回答\.json$/.test(f));
+  const files = (await readdir(answersDir)).filter(f => /^条文割当_他資格_.+_回答\.json$/.test(f));
   if (!files.length) {
-    console.error(`回答ファイルが見つかりません: ${DESKTOP}\\条文割当_他資格_*_回答.json`);
+    console.error(`回答ファイルが見つかりません: ${answersDir}\\条文割当_他資格_*_回答.json`);
     process.exit(1);
   }
   const ans = [];
   for (const f of files) {
-    const a = await readJson(path.join(DESKTOP, f));
+    const a = await readJson(path.join(answersDir, f));
     ans.push(...a);
     console.log(`読み込み: ${f}（${a.length}肢）`);
   }
@@ -72,6 +86,7 @@ const main = async () => {
   for (const a of ans) {
     const row = rowByKey.get(`${a.qId}|${a.choice}`);
     if (!row) { orphan.push(`${a.qId} 肢${a.choice}`); continue; }
+    if (!includedYearSet.has(row.year)) continue;
     const lawName = a.law === null || a.law === undefined || a.law === 'null' ? null : String(a.law).trim();
     const art = normArt(a.article);
     if (!lawName || !art) continue;
@@ -122,7 +137,7 @@ const main = async () => {
     console.log(`  行政書士 ${Object.keys(gyosei).length}条 → 合計カバー ${all}条`);
 
     const dest = path.join(HERE, `public/highlights/other_exams_${lawId}.json`);
-    const body = JSON.stringify({ lawId, exams, articles: out }, null, 2) + '\n';
+    const body = JSON.stringify({ lawId, exams, range: includedYears, articles: out }, null, 2) + '\n';
     if (WRITE) {
       await writeFile(dest, body, 'utf-8');
       console.log(`  ✅ ${path.relative(HERE, dest).replace(/\\/g, '/')} を更新`);

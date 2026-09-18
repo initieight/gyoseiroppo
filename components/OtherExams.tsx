@@ -5,14 +5,21 @@ import { OTHER_EXAMS, type OtherExamArticle } from '@/lib/laws';
  * 行政書士の数字とは合算せず、別ブロックで出す。
  * 検証の水準が行政書士分と違うので、その旨を必ず添える。
  */
-export function OtherExamBlock({ data }: { data: OtherExamArticle | undefined }) {
+export function OtherExamBlock({
+  data,
+  range = ['R2', 'R3', 'R4', 'R5', 'R6', 'R7'],
+}: {
+  data: OtherExamArticle | undefined;
+  range?: string[];
+}) {
   if (!data || data.total <= 0) return null;
   const rows = OTHER_EXAMS.map(e => ({ ...e, v: data.byExam[e.id] })).filter(r => r.v);
+  const rangeLabel = range.length > 1 ? `${range[0]}〜${range[range.length - 1]}` : range[0] ?? '';
 
   return (
     <section className="mb-6 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
       <h2 className="mb-2 text-sm font-bold text-gray-700">
-        他資格でも問われています（R2〜R7・のべ{data.total}問）
+        他資格でも問われています（{rangeLabel}・のべ{data.total}問）
       </h2>
       <ul className="mb-2 space-y-1.5">
         {rows.map(r => (

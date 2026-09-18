@@ -105,7 +105,7 @@ const main = async () => {
   if (skipped.malformed.size) console.log('  ', [...skipped.malformed].join(', '));
 
   const dest = path.join(HERE, 'public/highlights/other_exams_civil_code.json');
-  const body = JSON.stringify({ lawId: 'civil_code', exams: EXAMS, articles: out }, null, 2) + '\n';
+  const body = JSON.stringify({ lawId: 'civil_code', exams: EXAMS, range: YEAR_ORDER, articles: out }, null, 2) + '\n';
   if (WRITE) {
     await writeFile(dest, body, 'utf-8');
     console.log(`\n✅ ${path.relative(HERE, dest)} を更新しました`);
