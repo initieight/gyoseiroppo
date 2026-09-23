@@ -42,7 +42,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#1e40af',
+  themeColor: '#214a72',
   width: 'device-width',
   initialScale: 1,
 };
@@ -55,7 +55,9 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
-        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+        <link rel="icon" href="/icons/roppo-mark.svg" type="image/svg+xml" />
+        <link rel="icon" href="/icons/icon-32x32.png" sizes="32x32" type="image/png" />
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" sizes="180x180" />
       </head>
       <body className="flex min-h-screen flex-col">
         <div className="flex-1">{children}</div>

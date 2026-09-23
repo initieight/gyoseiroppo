@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="行政六法">
+  <rect width="512" height="512" rx="112" fill="#214a72"/>
+  <path d="M94 140c66-15 124 2 162 42v200c-42-31-96-45-162-32V140Z" fill="#fff"/>
+  <path d="M418 140c-66-15-124 2-162 42v200c42-31 96-45 162-32V140Z" fill="#fff"/>
+  <path d="M256 184v198" stroke="#9fc5e3" stroke-width="12" stroke-linecap="round"/>
+  <path d="M130 214c42-5 72 3 94 17M130 260c42-5 72 3 94 17M382 214c-42-5-72 3-94 17M382 260c-42-5-72 3-94 17" fill="none" stroke="#214a72" stroke-width="10" stroke-linecap="round" opacity=".75"/>
+</svg>
