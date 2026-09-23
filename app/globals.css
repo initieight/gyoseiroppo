@@ -2,6 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  color-scheme: light;
+  --roppo-ink: #172033;
+  --roppo-blue: #214a72;
+  --roppo-accent: #2d74ad;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #f5f7f9;
+  color: var(--roppo-ink);
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: #cfe4f5;
+  color: #173753;
+}
+
+:focus-visible {
+  outline: 3px solid rgba(45, 116, 173, 0.42);
+  outline-offset: 3px;
+}
+
 .heat-red {
   background-color: #ff6b6b;
 }
